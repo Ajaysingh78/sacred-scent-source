@@ -48,7 +48,7 @@ const Footer = () => {
                 <span className="text-primary-foreground font-bold text-lg">A</span>
               </div>
               <div>
-                <h3 className="text-xl font-bold">Agarwood Creations</h3>
+                <h3 className="text-xl font-bold">Namami Enterprises</h3>
                 <p className="text-sm text-brown-light">Pure Fragrance Since 2005</p>
               </div>
             </div>
@@ -110,15 +110,15 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <Phone className="text-primary mt-1" size={18} />
                 <div>
-                  <p className="text-brown-light">+91 98765 43210</p>
-                  <p className="text-brown-light">+91 87654 32109</p>
+                  <p className="text-brown-light">+91 7089899828</p>
+                  <p className="text-brown-light">+91 7089899828</p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-3">
                 <Mail className="text-primary mt-1" size={18} />
                 <div>
-                  <p className="text-brown-light">sales@agarwoodcreations.com</p>
+                  <p className="text-brown-light">pawangurjar@gmail.com</p>
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ const Footer = () => {
                 <div>
                   <p className="text-brown-light">
                     Plot No. 45, Industrial Area<br />
-                    Chandigarh, Punjab - 160002
+                    Indore, Madhya Pradesh - 160002
                   </p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ const Footer = () => {
               variant="whatsapp" 
               size="sm" 
               className="mt-6"
-              onClick={() => window.open("https://wa.me/+919876543210", "_blank")}
+              onClick={() => window.open("https://wa.me/+917089899828", "_blank")}
             >
               <MessageCircle className="mr-2" size={16} />
               WhatsApp Us
@@ -149,7 +149,7 @@ const Footer = () => {
         <div className="border-t border-brown/30 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-brown-light text-sm mb-4 md:mb-0">
-              <p>© {currentYear} Agarwood Creations. All rights reserved.</p>
+              <p>© {currentYear} Namami enterprises. All rights reserved.</p>
             </div>
             
             <div className="flex space-x-6 text-sm">

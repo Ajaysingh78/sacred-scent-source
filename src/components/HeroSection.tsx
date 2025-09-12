@@ -43,7 +43,7 @@ const HeroSection = () => {
               variant="whatsapp" 
               size="lg" 
               className="text-lg px-8 py-4"
-              onClick={() => window.open("https://wa.me/+919876543210", "_blank")}
+              onClick={() => window.open("https://wa.me/+917089899828", "_blank")}
             >
               <MessageCircle className="mr-2" size={20} />
               WhatsApp Now

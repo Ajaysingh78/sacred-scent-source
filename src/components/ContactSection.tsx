@@ -85,8 +85,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-foreground mb-1">Phone Numbers</h4>
-                  <p className="text-muted-foreground">+91 98765 43210</p>
-                  <p className="text-muted-foreground">+91 87654 32109</p>
+                  <p className="text-muted-foreground">+91 7089899828</p>
+                  <p className="text-muted-foreground">+91 7089899828</p>
                 </div>
               </div>
 
@@ -96,8 +96,8 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-foreground mb-1">Email Address</h4>
-                  <p className="text-muted-foreground">sales@agarwoodcreations.com</p>
-                  <p className="text-muted-foreground">info@agarwoodcreations.com</p>
+                  <p className="text-muted-foreground">namamienterpise.com</p>
+                  <p className="text-muted-foreground">pawangurajr@gmail.com</p>
                 </div>
               </div>
 
@@ -108,8 +108,8 @@ const ContactSection = () => {
                 <div>
                   <h4 className="font-semibold text-foreground mb-1">Factory Address</h4>
                   <p className="text-muted-foreground">
-                    Plot No. 45, Industrial Area Phase-II<br />
-                    Chandigarh, Punjab - 160002, India
+                    Plot No. 45, Industrial Area Dewas Naka <br />
+                    Indore,Madhya Pradesh- 160002, India
                   </p>
                 </div>
               </div>
@@ -139,7 +139,7 @@ const ContactSection = () => {
                   </div>
                   <Button 
                     variant="whatsapp" 
-                    onClick={() => window.open("https://wa.me/+919876543210", "_blank")}
+                    onClick={() => window.open("https://wa.me/+917089899828", "_blank")}
                   >
                     Chat Now
                   </Button>

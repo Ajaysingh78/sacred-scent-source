@@ -23,7 +23,7 @@ const Header = () => {
               <span className="text-primary-foreground font-bold text-lg">A</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Agarwood Creations</h1>
+              <h1 className="text-xl font-bold text-foreground">Namami Enterprises</h1>
               <p className="text-xs text-muted-foreground">Pure Fragrance Since 2005</p>
             </div>
           </div>
