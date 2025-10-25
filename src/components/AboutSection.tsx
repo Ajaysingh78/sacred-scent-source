@@ -52,14 +52,26 @@ const AboutSection = () => {
               Our Story
             </h3>
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              Started as a small family business in 2005, Agarwood Creations has grown into 
-              one of India's most trusted incense stick manufacturers. Our journey began with 
-              a simple vision: to create pure, authentic fragrances that bring peace and 
-              positivity to every home.
+
+              Building Trust, Delivering Excellence
+
+              Namami Enterprises is a leading manufacturer of premium raw agarbatti, serving wholesalers, distributors, and businesses across India and beyond.
+
+              We specialize in large-scale bulk production — supplying 5 tons, 10 tons, and 20 tons of consistently high-quality incense sticks that meet the demands of serious buyers.
+
+              Our approach is simple:
+              → Uncompromising quality standards
+              → Reliable, on-time delivery
+              → Competitive pricing for bulk orders
+              → Long-term business partnerships
+
+              With our modern manufacturing facility and experienced team, we've become the preferred choice for businesses that value dependability, purity, and scale in the agarbatti industry.
+
+
             </p>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Today, we operate from our state-of-the-art manufacturing facility, combining 
-              traditional craftsmanship with modern technology to produce premium quality 
+              Today, we operate from our state-of-the-art manufacturing facility, combining
+              traditional craftsmanship with modern technology to produce premium quality
               incense sticks that meet international standards.
             </p>
 

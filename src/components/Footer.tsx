@@ -110,7 +110,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <Phone className="text-primary mt-1" size={18} />
                 <div>
-                  <p className="text-brown-light">+91 7089899828</p>
+                  <p className="text-brown-light">+91  7067449775</p>
                   <p className="text-brown-light">+91 7089899828</p>
                 </div>
               </div>
@@ -118,7 +118,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <Mail className="text-primary mt-1" size={18} />
                 <div>
-                  <p className="text-brown-light">pawangurjar@gmail.com</p>
+                  <p className="text-brown-light">namamiagarbati01@gmail.com</p>
                 </div>
               </div>
 
@@ -126,8 +126,9 @@ const Footer = () => {
                 <MapPin className="text-primary mt-1" size={18} />
                 <div>
                   <p className="text-brown-light">
-                    Plot No. 45, Industrial Area<br />
-                    Indore, Madhya Pradesh - 160002
+                     95A, Ved Mata Gayatri Nagar<br />
+                     SDA Compound, Indore (M.P.), India
+                    
                   </p>
                 </div>
               </div>
