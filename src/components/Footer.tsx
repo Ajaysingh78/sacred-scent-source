@@ -3,11 +3,9 @@ import {
   Phone, 
   Mail, 
   MapPin, 
-  Facebook, 
   Instagram, 
-  Twitter, 
-  Linkedin,
-  MessageCircle
+  MessageCircle,
+  ShoppingBag
 } from "lucide-react";
 
 const Footer = () => {
@@ -30,11 +28,10 @@ const Footer = () => {
     "Custom Fragrances",
   ];
 
+  // ✅ Only two links as per your request
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Instagram, href: "https://www.instagram.com/namamienterprises?igsh=MXBoMnFoMWxhNTNtaA==", label: "Instagram" },
+    { icon: ShoppingBag, href: "https://IndiaMART.in/aZowVKpm", label: "IndiaMART" },
   ];
 
   return (
@@ -58,6 +55,7 @@ const Footer = () => {
               and distributors across the country with authentic fragrances and unmatched quality.
             </p>
 
+            {/* ✅ Only Instagram and IndiaMART */}
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
                 <a
@@ -65,6 +63,8 @@ const Footer = () => {
                   href={social.href}
                   className="w-10 h-10 bg-brown/50 rounded-full flex items-center justify-center hover:bg-primary transition-smooth"
                   aria-label={social.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <social.icon size={18} />
                 </a>
@@ -110,7 +110,7 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <Phone className="text-primary mt-1" size={18} />
                 <div>
-                  <p className="text-brown-light">+91  7067449775</p>
+                  <p className="text-brown-light">+91 7067449775</p>
                   <p className="text-brown-light">+91 7089899828</p>
                 </div>
               </div>
@@ -126,9 +126,8 @@ const Footer = () => {
                 <MapPin className="text-primary mt-1" size={18} />
                 <div>
                   <p className="text-brown-light">
-                     95A, Ved Mata Gayatri Nagar<br />
-                     SDA Compound, Indore (M.P.), India
-                    
+                    95A, Ved Mata Gayatri Nagar<br />
+                    SDA Compound, Indore (M.P.), India
                   </p>
                 </div>
               </div>
