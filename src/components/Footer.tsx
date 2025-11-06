@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { 
-  Phone, 
-  Mail, 
-  MapPin, 
-  Instagram, 
+import logo from "@/assets/logo.png";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Instagram,
   MessageCircle,
   ShoppingBag
 } from "lucide-react";
@@ -21,7 +22,7 @@ const Footer = () => {
 
   const productCategories = [
     "Sandalwood Incense",
-    "Floral Fragrances", 
+    "Floral Fragrances",
     "Traditional Agarbatti",
     "Wellness Collection",
     "Premium Range",
@@ -40,18 +41,33 @@ const Footer = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-1">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 primary-gradient rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">A</span>
+            <div className="flex items-center space-x-2 mb-6 group">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 rotate-6 group-hover:rotate-0 overflow-hidden">
+                  <img
+                    src={logo}
+                    alt="Namami Enterprises logo"
+                    className="w-full h-full object-cover rounded-2xl"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div
+                  className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white shadow-md animate-pulse"
+                  aria-hidden="true"
+                />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Namami Enterprises</h3>
-                <p className="text-sm text-brown-light">Pure Fragrance Since 2005</p>
+                <h1 className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent group-hover:from-orange-700 group-hover:to-amber-600 transition-all duration-300">
+                  Namami Enterprises
+                </h1>
+                {/* 'Since' removed as requested */}
+                <p className="text-sm text-brown-light">Pure Fragrance • Wholesale</p>
               </div>
             </div>
-            
+
             <p className="text-brown-light mb-6 leading-relaxed">
-              India's trusted manufacturer of premium incense sticks, serving wholesalers 
+              India&apos;s trusted manufacturer of premium incense sticks, serving wholesalers
               and distributors across the country with authentic fragrances and unmatched quality.
             </p>
 
@@ -61,10 +77,11 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 bg-brown/50 rounded-full flex items-center justify-center hover:bg-primary transition-smooth"
+                  className="w-10 h-10 bg-brown/50 rounded-full flex items-center justify-center hover:bg-primary transition-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
                   aria-label={social.label}
                   target="_blank"
                   rel="noopener noreferrer"
+                  title={social.label}
                 >
                   <social.icon size={18} />
                 </a>
@@ -133,9 +150,9 @@ const Footer = () => {
               </div>
             </div>
 
-            <Button 
-              variant="whatsapp" 
-              size="sm" 
+            <Button
+              variant="whatsapp"
+              size="sm"
               className="mt-6"
               onClick={() => window.open("https://wa.me/+917089899828", "_blank")}
             >
@@ -151,7 +168,7 @@ const Footer = () => {
             <div className="text-brown-light text-sm mb-4 md:mb-0">
               <p>© {currentYear} Namami enterprises. All rights reserved.</p>
             </div>
-            
+
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-brown-light hover:text-white transition-smooth">
                 Privacy Policy

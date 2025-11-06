@@ -288,7 +288,7 @@ const ContactSection = () => {
           
           <div className="relative w-full h-[500px]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3679.8827887359484!2d75.8688!3d22.7196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd4f3e6d3b4d%3A0x95a0f3e8e8e8e8e8!2s95A%2C%20Ved%20Mata%20Gayatri%20Nagar%2C%20SDA%20Compound%2C%20Indore%2C%20Madhya%20Pradesh%20452010!5e0!3m2!1sen!2sin!4v1234567890"
+              src="https://www.google.com/maps?q=95A%2C%20Ved%20Mata%20Gayatri%20Nagar%2C%20SDA%20Compound%2C%20Indore%2C%20Madhya%20Pradesh%20452010&z=19&hl=en&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}

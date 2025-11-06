@@ -298,4 +298,4 @@ const ProductsSection = () => {
   );
 };
 
-export default ProductsSection;
+export default ProductsSection;   

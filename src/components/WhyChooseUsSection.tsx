@@ -38,7 +38,7 @@ const WhyChooseUsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Why Choose <span className="text-primary">Agarwood Creations</span>
+            Why Choose <span className="text-primary"> Namami Enterprises</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Your trusted partner for premium incense sticks with unmatched quality, service, and pricing
