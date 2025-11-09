@@ -1,412 +1,478 @@
 import { Button } from "@/components/ui/button";
 import { 
   Phone, 
-  MessageCircle, 
-  Sparkles, 
   ArrowRight, 
   CheckCircle,
   Shield,
   Truck,
-  Star,
   Award,
   TrendingUp,
   Users,
-  Zap,
   Package,
-  Clock,
+  Sparkles,
   ChevronDown,
-  Calculator,
-  PlayCircle
+  Star
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const NamamiHero = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeStyle, setActiveStyle] = useState('premium');
-  const [scrollY, setScrollY] = useState(0);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setIsVisible(true);
     
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
+    const handleMouseMove = (e) => {
+      setMousePosition({ 
+        x: (e.clientX / window.innerWidth) * 15, 
+        y: (e.clientY / window.innerHeight) * 15 
+      });
     };
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Style selector component
-  const StyleSelector = () => (
-    <div className="fixed top-4 right-4 z-50 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-2 shadow-2xl">
-      <div className="flex gap-2">
-        {[
-          { id: 'premium', label: 'Premium', icon: Star },
-          { id: 'minimal', label: 'Minimal', icon: Zap },
-          { id: 'bold', label: 'Bold', icon: TrendingUp }
-        ].map(style => (
-          <button
-            key={style.id}
-            onClick={() => setActiveStyle(style.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-              activeStyle === style.id 
-                ? 'bg-orange-500 text-white shadow-lg' 
-                : 'bg-white/5 text-white/60 hover:bg-white/10'
-            }`}
-          >
-            <style.icon size={16} />
-            <span className="text-sm font-semibold">{style.label}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  // STYLE 1: PREMIUM & MODERN
-  const PremiumStyle = () => (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900">
-      {/* Elegant Gradient Orbs */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-orange-500 to-pink-500 rounded-full mix-blend-screen filter blur-3xl animate-float-slow"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mix-blend-screen filter blur-3xl animate-float-slow" style={{animationDelay: '2s'}}></div>
-      </div>
-
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA1Ii8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40"></div>
-
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className={`max-w-7xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          
-          {/* Premium Badge */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-pink-500/10 backdrop-blur-xl px-6 py-3 rounded-full border border-white/20 shadow-2xl">
-              <Shield className="text-orange-400" size={20} />
-              <span className="text-white font-bold text-sm">ISO Certified Manufacturing Excellence</span>
-              <Award className="text-purple-400" size={20} />
-            </div>
-          </div>
-
-          {/* Main Headline */}
-          <div className="text-center space-y-6 mb-12">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-tight">
-              <span className="block text-white mb-2">India's Most Trusted</span>
-              <span className="block bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-                Manufacturing Partner
-              </span>
-            </h1>
-            
-            <p className="text-xl sm:text-2xl md:text-3xl text-white/80 max-w-4xl mx-auto font-medium leading-relaxed">
-              For Agarbatti & Industrial Excellence
-            </p>
-
-            <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-3xl mx-auto leading-relaxed">
-              We don't just supply products—we power your business growth with ISO-certified quality, unmatched reliability, and <span className="text-orange-400 font-bold">5000+ successful deliveries</span> across India.
-            </p>
-          </div>
-
-          {/* Trust Metrics */}
-          <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto mb-12">
-            {[
-              { value: '500+', label: 'Trusted Businesses', icon: Users, color: 'from-green-400 to-emerald-500' },
-              { value: '5000+', label: 'Products Delivered', icon: Package, color: 'from-orange-400 to-amber-500' },
-              { value: '100%', label: 'Quality Assured', icon: Shield, color: 'from-purple-400 to-pink-500' }
-            ].map((metric, i) => (
-              <div key={i} className="text-center group cursor-pointer">
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${metric.color} mb-3 group-hover:scale-110 transition-transform duration-300`}>
-                  <metric.icon className="text-white" size={28} />
-                </div>
-                <div className={`text-3xl sm:text-4xl md:text-5xl font-black bg-gradient-to-r ${metric.color} bg-clip-text text-transparent`}>
-                  {metric.value}
-                </div>
-                <div className="text-white/60 text-xs sm:text-sm font-semibold mt-1">{metric.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Benefits */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12 max-w-5xl mx-auto">
-            {[
-              'ISO-Certified Manufacturing with Zero-Compromise Quality',
-              '500+ Businesses Trust Us for Consistent Supply',
-              'Pan-India Delivery with Real-Time Order Tracking'
-            ].map((benefit, i) => (
-              <div key={i} className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full px-4 sm:px-6 py-3 hover:bg-white/10 hover:scale-105 transition-all duration-300">
-                <CheckCircle className="text-green-400 flex-shrink-0" size={18} />
-                <span className="text-white text-sm font-medium">{benefit}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Button 
-              size="lg"
-              className="group relative overflow-hidden bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl shadow-orange-500/50 hover:scale-110 transition-all duration-300 border-2 border-orange-400/30"
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-            >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-              <div className="relative flex items-center gap-3">
-                <Phone className="group-hover:rotate-12 transition-transform" size={22} />
-                <span>Get Your Wholesale Quote Now</span>
-                <ArrowRight className="group-hover:translate-x-2 transition-transform" size={20} />
-              </div>
-            </Button>
-            
-            <Button 
-              size="lg"
-              variant="outline"
-              className="group bg-white/5 backdrop-blur-xl border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 font-semibold text-lg px-10 py-7 rounded-2xl hover:scale-105 transition-all duration-300"
-              onClick={() => alert('Product range coming soon!')}
-            >
-              <div className="flex items-center gap-3">
-                <Package className="group-hover:rotate-12 transition-transform" size={22} />
-                <span>View Our Product Range</span>
-              </div>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ChevronDown className="text-white/40" size={32} />
-      </div>
-    </section>
-  );
-
-  // STYLE 2: MINIMAL & CLEAN
-  const MinimalStyle = () => (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white">
-      {/* Subtle Grid */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjAzIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-100"></div>
-
-      {/* Single Orange Accent Line */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-600 to-transparent"></div>
-
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className={`max-w-6xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          
-          {/* Minimal Headline */}
-          <div className="text-center space-y-8 mb-16">
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-slate-900 leading-none tracking-tight">
-              Manufacturing<br/>Excellence.
-              <span className="block text-orange-600">Delivered.</span>
-            </h1>
-            
-            <div className="w-24 h-1 bg-slate-900 mx-auto"></div>
-
-            <p className="text-xl sm:text-2xl md:text-3xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-light">
-              From premium agarbatti to industrial machinery—one partner, unlimited possibilities.
-            </p>
-
-            <p className="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto">
-              Simple ordering. Transparent pricing. Guaranteed quality.
-            </p>
-          </div>
-
-          {/* Minimal Benefits */}
-          <div className="space-y-4 max-w-2xl mx-auto mb-16">
-            {[
-              'Straight from manufacturer. No middlemen markup.',
-              'Fixed timelines. Zero delays. Always on schedule.',
-              'One call away. Real human support, not bots.'
-            ].map((benefit, i) => (
-              <div key={i} className="flex items-start gap-4 group cursor-pointer">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <ArrowRight className="text-white" size={16} />
-                </div>
-                <p className="text-lg text-slate-700 font-medium group-hover:text-slate-900 transition-colors">{benefit}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Minimal CTA */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Button 
-              size="lg"
-              className="bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg px-12 py-7 rounded-none shadow-xl hover:shadow-2xl transition-all duration-300"
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-            >
-              Start Your Order
-            </Button>
-            
-            <button className="text-slate-900 font-semibold text-lg underline underline-offset-4 hover:text-orange-600 transition-colors">
-              Calculate Your Bulk Discount
-            </button>
-          </div>
-
-          {/* Minimal Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-4xl mx-auto mt-20 pt-20 border-t border-slate-200">
-            {[
-              { value: '5000+', label: 'Orders' },
-              { value: '500+', label: 'Clients' },
-              { value: '100%', label: 'Quality' }
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-5xl font-black text-slate-900 mb-2">{stat.value}</div>
-                <div className="text-sm text-slate-500 uppercase tracking-wider">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  // STYLE 3: BOLD & HIGH-IMPACT
-  const BoldStyle = () => (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Dramatic Diagonal Split */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-red-600 to-orange-700" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 70%, 0 100%)' }}></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" style={{ clipPath: 'polygon(0 100%, 100% 70%, 100% 100%, 0 100%)' }}></div>
-      </div>
-
-      {/* Motion Blur Lines */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(10)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute h-1 bg-white rounded-full animate-slide"
-            style={{
-              top: `${i * 10}%`,
-              left: '-100%',
-              width: '200%',
-              animationDelay: `${i * 0.2}s`,
-              animationDuration: '3s'
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className={`max-w-7xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          
-          {/* Urgency Badge */}
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex items-center gap-3 bg-yellow-400 text-slate-900 px-6 py-3 rounded-full shadow-2xl animate-pulse">
-              <Zap className="animate-bounce" size={20} />
-              <span className="font-black text-sm uppercase tracking-wider">Limited Manufacturer Slots Available</span>
-            </div>
-          </div>
-
-          {/* Bold Headline */}
-          <div className="text-center space-y-6 mb-12">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-tight text-white">
-              <span className="block mb-2">Stop Overpaying</span>
-              <span className="block text-yellow-400">Middlemen.</span>
-              <span className="block">Buy Direct.</span>
-              <span className="block text-yellow-400">Build Bigger.</span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed font-medium">
-              Why settle for average suppliers when you can partner with manufacturers who've delivered <span className="text-yellow-400 font-black">5000+ orders</span> without a single quality complaint?
-            </p>
-
-            <p className="text-xl sm:text-2xl font-bold text-yellow-400">
-              This is wholesale, reimagined.
-            </p>
-          </div>
-
-          {/* Impact Benefits */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-5xl mx-auto mb-12">
-            {[
-              { icon: TrendingUp, text: 'Up to 40% Savings vs. Distributor Prices', color: 'bg-green-500' },
-              { icon: Zap, text: '48-Hour Express Fulfillment Available', color: 'bg-yellow-500' },
-              { icon: Shield, text: '100% Money-Back Quality Guarantee', color: 'bg-blue-500' }
-            ].map((benefit, i) => (
-              <div key={i} className={`${benefit.color} text-slate-900 rounded-2xl p-6 shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer`}>
-                <benefit.icon className="mb-3" size={32} />
-                <p className="font-bold text-base">{benefit.text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Aggressive CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
-            <Button 
-              size="lg"
-              className="group relative overflow-hidden bg-red-600 hover:bg-red-700 text-white font-black text-xl px-12 py-8 rounded-2xl shadow-2xl shadow-red-600/50 hover:scale-110 transition-all duration-300 border-4 border-yellow-400 animate-pulse-slow"
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-            >
-              <div className="relative flex items-center gap-3">
-                <Star className="animate-spin-slow" size={24} />
-                <span>Claim Your Manufacturer Discount</span>
-                <ArrowRight className="group-hover:translate-x-2 transition-transform" size={22} />
-              </div>
-            </Button>
-            
-            <Button 
-              size="lg"
-              className="bg-transparent border-4 border-white text-white hover:bg-white hover:text-slate-900 font-bold text-xl px-12 py-8 rounded-2xl transition-all duration-300 hover:scale-105"
-              onClick={() => alert('Live pricing coming soon!')}
-            >
-              <div className="flex items-center gap-3">
-                <Calculator size={24} />
-                <span>See Live Pricing</span>
-              </div>
-            </Button>
-          </div>
-
-          {/* Countdown Timer (Mock) */}
-          <div className="mt-12 text-center">
-            <p className="text-white/80 text-sm mb-2">Special manufacturer pricing expires in:</p>
-            <div className="flex justify-center gap-4">
-              {['23', '59', '45'].map((time, i) => (
-                <div key={i} className="bg-white/10 backdrop-blur-xl rounded-xl px-4 py-2 border border-white/20">
-                  <div className="text-3xl font-black text-yellow-400">{time}</div>
-                  <div className="text-xs text-white/60">{['HRS', 'MIN', 'SEC'][i]}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
-      <StyleSelector />
-      {activeStyle === 'premium' && <PremiumStyle />}
-      {activeStyle === 'minimal' && <MinimalStyle />}
-      {activeStyle === 'bold' && <BoldStyle />}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        {/* Premium Background Effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Parallax gradient orbs */}
+          <div 
+            className="absolute inset-0 opacity-30 transition-transform duration-300 ease-out"
+            style={{
+              background: 'radial-gradient(circle at 20% 30%, rgba(255, 107, 0, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(251, 146, 60, 0.15) 0%, transparent 50%)',
+              transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
+            }}
+          />
+          
+          {/* Animated gradient blobs */}
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-orange-500/20 via-amber-500/10 to-transparent rounded-full blur-3xl animate-float" />
+            <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-gradient-to-tl from-orange-600/15 via-orange-400/5 to-transparent rounded-full blur-3xl animate-float-delay" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-amber-500/5 to-orange-500/5 rounded-full blur-3xl animate-pulse-slow" />
+          </div>
+          
+          {/* Premium grid pattern */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_90%)]" />
+          
+          {/* Subtle noise texture */}
+          <div className="absolute inset-0 opacity-[0.015] mix-blend-overlay" style={{
+            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="3.5" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E")'
+          }} />
+        </div>
+
+        <div className="relative z-10 container mx-auto px-6 lg:px-12 py-20">
+          <div className={`max-w-7xl mx-auto transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+            
+            {/* Premium Trust Badge */}
+            <div className="flex justify-center mb-10 animate-fade-in-down">
+              <div className="group relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 backdrop-blur-xl hover:border-orange-400/50 transition-all duration-500 hover:shadow-lg hover:shadow-orange-500/20">
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+                <Award className="text-orange-400 w-5 h-5 animate-pulse-subtle" />
+                <span className="text-sm font-bold text-white/95 tracking-wide">ISO 9001:2015 Certified</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-sm font-semibold text-white/80">5000+ Orders Delivered</span>
+                <Shield className="text-orange-400 w-5 h-5" />
+              </div>
+            </div>
+
+            {/* Hero Headline - Maximum Impact */}
+            <div className="text-center mb-12 space-y-6">
+              <div className="relative inline-block">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.9] tracking-tighter">
+                  <span className="block text-white mb-2 animate-slide-in-left">
+                    Namami
+                  </span>
+                  <span className="relative inline-block animate-slide-in-right">
+                    <span className="relative z-10 bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400 bg-clip-text text-transparent drop-shadow-2xl">
+                      Enterprises
+                    </span>
+                    <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/30 via-amber-500/30 to-orange-500/30 blur-3xl -z-10 animate-pulse-glow" />
+                  </span>
+                </h1>
+              </div>
+              
+              <div className="relative">
+                <p className="text-2xl sm:text-3xl md:text-4xl text-white/90 font-bold max-w-4xl mx-auto leading-tight animate-fade-in-up animation-delay-300">
+                  India's Premier Manufacturer of
+                  <span className="block mt-2 bg-gradient-to-r from-orange-300 via-amber-300 to-orange-400 bg-clip-text text-transparent">
+                    Premium Agarbatti & Raw Materials
+                  </span>
+                </p>
+              </div>
+              
+              <p className="text-lg sm:text-xl md:text-2xl text-white/60 max-w-4xl mx-auto leading-relaxed font-light px-4 animate-fade-in-up animation-delay-500">
+                From raw materials to industrial machinery — delivering excellence with every order, trusted by 500+ businesses across India
+              </p>
+              
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-white/70 text-sm sm:text-base pt-4 animate-fade-in-up animation-delay-700">
+                <div className="flex items-center gap-2.5 group cursor-default">
+                  <div className="relative">
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping absolute" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                  </div>
+                  <span className="font-medium group-hover:text-white/90 transition-colors">500+ Active Partners</span>
+                </div>
+                <div className="hidden sm:block w-px h-5 bg-white/20" />
+                <div className="flex items-center gap-2.5 group cursor-default">
+                  <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                  <span className="font-medium group-hover:text-white/90 transition-colors">4.5/5 Rating</span>
+                </div>
+                <div className="hidden sm:block w-px h-5 bg-white/20" />
+                <div className="flex items-center gap-2.5 group cursor-default">
+                  <CheckCircle className="w-5 h-5 text-orange-400" />
+                  <span className="font-medium group-hover:text-white/90 transition-colors">99.9% Quality Guaranteed</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12 animate-fade-in-up animation-delay-900">
+              {[
+                { 
+                  value: '500+', 
+                  label: 'Trusted Distributors', 
+                  sublabel: 'Across India',
+                  icon: Users, 
+                  gradient: 'from-emerald-400 via-green-400 to-emerald-500',
+                  bgGradient: 'from-emerald-500/10 via-green-500/5 to-emerald-500/10',
+                  iconBg: 'from-emerald-500/20 to-green-500/20'
+                },
+                { 
+                  value: '5000+', 
+                  label: 'Orders Completed', 
+                  sublabel: 'On-time delivery',
+                  icon: Package, 
+                  gradient: 'from-orange-400 via-amber-400 to-orange-500',
+                  bgGradient: 'from-orange-500/10 via-amber-500/5 to-orange-500/10',
+                  iconBg: 'from-orange-500/20 to-amber-500/20'
+                },
+                { 
+                  value: 'ISO', 
+                  label: 'Certified Quality', 
+                  sublabel: 'Zero compromise',
+                  icon: Shield, 
+                  gradient: 'from-blue-400 via-cyan-400 to-blue-500',
+                  bgGradient: 'from-blue-500/10 via-cyan-500/5 to-blue-500/10',
+                  iconBg: 'from-blue-500/20 to-cyan-500/20'
+                }
+              ].map((metric, i) => (
+                <div 
+                  key={i} 
+                  className="group relative bg-white/[0.03] backdrop-blur-xl rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-white/30 transition-all duration-500 hover:scale-[1.02] hover:-translate-y-1 cursor-default"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${metric.bgGradient} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className="relative">
+                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${metric.iconBg} mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                      <metric.icon className="text-white drop-shadow-lg" size={26} strokeWidth={2} />
+                    </div>
+                    <div className={`text-4xl sm:text-5xl md:text-6xl font-black bg-gradient-to-r ${metric.gradient} bg-clip-text text-transparent mb-2 leading-none`}>
+                      {metric.value}
+                    </div>
+                    <div className="text-white/90 text-base sm:text-lg font-bold mb-1">{metric.label}</div>
+                    <div className="text-white/50 text-sm font-medium">{metric.sublabel}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Premium USPs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto mb-12 animate-fade-in-up animation-delay-1100">
+              {[
+                { 
+                  icon: Shield, 
+                  text: 'ISO-Certified Quality', 
+                  subtext: 'Rigorous quality standards',
+                  color: 'blue'
+                },
+                { 
+                  icon: Truck, 
+                  text: 'Pan-India Delivery', 
+                  subtext: 'Real-time tracking system',
+                  color: 'orange'
+                },
+                { 
+                  icon: TrendingUp, 
+                  text: 'Manufacturer Direct', 
+                  subtext: 'Best wholesale pricing',
+                  color: 'green'
+                }
+              ].map((item, i) => (
+                <div 
+                  key={i}
+                  className="group relative flex items-start gap-4 p-5 rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/10 hover:bg-white/[0.05] hover:border-white/30 transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                  <div className="relative flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                    <item.icon className="text-orange-400 w-6 h-6" strokeWidth={2} />
+                  </div>
+                  <div className="relative">
+                    <div className="text-white font-bold text-base mb-1.5">{item.text}</div>
+                    <div className="text-white/50 text-sm font-medium">{item.subtext}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Premium CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-fade-in-up animation-delay-1300">
+              <Button 
+                size="lg"
+                className="group relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 hover:from-orange-500 hover:via-orange-400 hover:to-orange-500 text-white font-bold text-lg px-10 py-7 rounded-2xl shadow-2xl shadow-orange-500/30 hover:shadow-orange-500/50 transition-all duration-500 border-2 border-orange-400/30 hover:border-orange-300/50 hover:scale-105 w-full sm:w-auto"
+                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000" />
+                <div className="relative flex items-center gap-3">
+                  <Phone className="w-6 h-6" strokeWidth={2.5} />
+                  <span className="tracking-wide">Get Wholesale Quote</span>
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" strokeWidth={2.5} />
+                </div>
+              </Button>
+              
+              <Button 
+                size="lg"
+                className="group relative overflow-hidden bg-white/5 backdrop-blur-xl border-2 border-white/20 text-white hover:bg-white/10 hover:border-white/40 font-bold text-lg px-10 py-7 rounded-2xl transition-all duration-500 hover:scale-105 w-full sm:w-auto"
+                onClick={() => scrollToSection('products')}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative flex items-center gap-3">
+                  <Sparkles className="w-6 h-6 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" strokeWidth={2} />
+                  <span className="tracking-wide">View Products</span>
+                </div>
+              </Button>
+            </div>
+
+            {/* Additional Trust Elements */}
+            <div className="mt-16 flex items-center justify-center gap-8 text-white/40 text-sm animate-fade-in-up animation-delay-1500">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span>Secure Payment</span>
+              </div>
+              <div className="hidden sm:block w-px h-4 bg-white/20" />
+              <div className="flex items-center gap-2">
+                <Truck className="w-4 h-4" />
+                <span>Fast Delivery</span>
+              </div>
+              <div className="hidden sm:block w-px h-4 bg-white/20" />
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>Quality Assured</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Elegant Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-slow">
+          <div className="flex flex-col items-center gap-2 opacity-40 hover:opacity-80 transition-opacity cursor-pointer group"
+               onClick={() => scrollToSection('about')}>
+            <span className="text-white text-xs font-semibold uppercase tracking-widest">Scroll</span>
+            <div className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center p-2 group-hover:border-white/50 transition-colors">
+              <div className="w-1 h-2 bg-white/50 rounded-full animate-scroll-down" />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <style>{`
-        @keyframes float-slow {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, 30px) scale(1.1); }
+        @keyframes float {
+          0%, 100% { 
+            transform: translate(0, 0) rotate(0deg); 
+          }
+          33% { 
+            transform: translate(30px, -30px) rotate(5deg); 
+          }
+          66% { 
+            transform: translate(-20px, 20px) rotate(-5deg); 
+          }
         }
         
-        @keyframes slide {
-          0% { left: -100%; }
-          100% { left: 100%; }
+        @keyframes float-delay {
+          0%, 100% { 
+            transform: translate(0, 0) rotate(0deg); 
+          }
+          33% { 
+            transform: translate(-40px, 30px) rotate(-5deg); 
+          }
+          66% { 
+            transform: translate(30px, -20px) rotate(5deg); 
+          }
         }
-        
+
         @keyframes pulse-slow {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.8; }
+          0%, 100% { 
+            opacity: 0.3;
+            transform: translate(-50%, -50%) scale(1);
+          }
+          50% { 
+            opacity: 0.5;
+            transform: translate(-50%, -50%) scale(1.05);
+          }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { 
+            opacity: 0.5;
+          }
+          50% { 
+            opacity: 0.8;
+          }
+        }
+
+        @keyframes pulse-subtle {
+          0%, 100% { 
+            opacity: 1;
+          }
+          50% { 
+            opacity: 0.6;
+          }
+        }
+
+        @keyframes fade-in-down {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-in-left {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes slide-in-right {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+
+        @keyframes scroll-down {
+          0% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(12px);
+          }
         }
         
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        .animate-float {
+          animation: float 20s ease-in-out infinite;
         }
         
-        .animate-float-slow {
-          animation: float-slow 8s ease-in-out infinite;
+        .animate-float-delay {
+          animation: float-delay 25s ease-in-out infinite;
         }
-        
-        .animate-slide {
-          animation: slide 3s linear infinite;
-        }
-        
+
         .animate-pulse-slow {
-          animation: pulse-slow 2s ease-in-out infinite;
+          animation: pulse-slow 8s ease-in-out infinite;
         }
-        
-        .animate-spin-slow {
-          animation: spin-slow 3s linear infinite;
+
+        .animate-pulse-glow {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .animate-pulse-subtle {
+          animation: pulse-subtle 2s ease-in-out infinite;
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+          opacity: 0;
+        }
+
+        .animate-slide-in-left {
+          animation: slide-in-left 0.8s ease-out forwards;
+        }
+
+        .animate-slide-in-right {
+          animation: slide-in-right 0.8s ease-out forwards;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 3s ease-in-out infinite;
+        }
+
+        .animate-scroll-down {
+          animation: scroll-down 2s ease-in-out infinite;
+        }
+
+        .animation-delay-300 {
+          animation-delay: 300ms;
+        }
+
+        .animation-delay-500 {
+          animation-delay: 500ms;
+        }
+
+        .animation-delay-700 {
+          animation-delay: 700ms;
+        }
+
+        .animation-delay-900 {
+          animation-delay: 900ms;
+        }
+
+        .animation-delay-1100 {
+          animation-delay: 1100ms;
+        }
+
+        .animation-delay-1300 {
+          animation-delay: 1300ms;
+        }
+
+        .animation-delay-1500 {
+          animation-delay: 1500ms;
         }
       `}</style>
     </>

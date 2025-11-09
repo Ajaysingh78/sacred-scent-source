@@ -8,58 +8,72 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./components/auth/AuthPage";
-import Dashboard from "./pages/Dashboard";
 
 // Initialize React Query Client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
-const queryClient = new QueryClient();
+// Loading Component
+const LoadingScreen = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-amber-50/30 to-orange-100/40">
+    <div className="text-center">
+      <div className="relative">
+        <div className="w-20 h-20 border-4 border-orange-200 rounded-full"></div>
+        <div className="w-20 h-20 border-4 border-orange-600 border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+      </div>
+      <p className="text-gray-700 font-semibold mt-6 text-lg">Loading your experience...</p>
+      <p className="text-gray-500 text-sm mt-2">Please wait a moment</p>
+    </div>
+  </div>
+);
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 font-semibold">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
-  return user ? <>{children}</> : <Navigate to="/auth" replace />;
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  return <>{children}</>;
 };
 
-// Public Route Component (redirects to dashboard if already logged in)
+// Public Route Component (redirects to home if already logged in)
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-orange-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 font-semibold">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
-  return !user ? <>{children}</> : <Navigate to="/dashboard" replace />;
+  // If user is logged in and tries to access auth page, redirect to home
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
+            
+            {/* Auth Route - Redirects to home if already logged in */}
             <Route
               path="/auth"
               element={
@@ -69,7 +83,8 @@ const App = () => (
               }
             />
 
-            {/* Protected Routes */}
+            {/* Protected Routes - Add your protected pages here */}
+            {/* Example:
             <Route
               path="/dashboard"
               element={
@@ -78,10 +93,23 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            */}
 
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          
+          {/* Toasters for notifications */}
+          <Toaster />
+          <Sonner />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

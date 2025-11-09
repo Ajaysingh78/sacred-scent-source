@@ -1,31 +1,16 @@
+// src/components/Header.tsx
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Mail, MapPin, User, LogOut, ShoppingCart, Heart, Settings, Package } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useNavigate } from "react-router-dom";
-
-// Mock Auth Hook - Replace with your actual useAuth hook
-const useAuth = () => {
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("mockUser");
-    if (storedUser) setCurrentUser(JSON.parse(storedUser));
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem("mockUser");
-    setCurrentUser(null);
-  };
-
-  return { currentUser, logout };
-};
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { currentUser, logout } = useAuth();
+  const { user, logout } = useAuth(); // Using real auth context
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,35 +46,22 @@ const Header = () => {
     { icon: MapPin, text: "Indore, Madhya Pradesh", href: "#contact" },
   ];
 
-  // Use navigate() for internal app routes
-  const userMenuItems = [
-    { icon: User, label: "My Profile", action: () => navigate("/dashboard") },
-    { icon: Package, label: "My Orders", action: () => navigate("/orders") },
-    { icon: Heart, label: "Wishlist", action: () => navigate("/wishlist") },
-    { icon: Settings, label: "Settings", action: () => navigate("/settings") },
-  ];
 
-  const handleLogout = () => {
-    logout();
+
+  const handleLogout = async () => {
+    await logout();
     setShowUserMenu(false);
-    navigate("/"); // SPA redirect
+    navigate("/");
   };
 
   const getUserDisplayName = () => {
-    if (!currentUser) return "";
-    return currentUser.displayName?.split(" ")[0] || currentUser.email?.split("@")[0] || "User";
-    };
-  const getUserInitial = () => {
-    if (!currentUser) return "";
-    return (currentUser.displayName?.[0] || currentUser.email?.[0] || "U").toUpperCase();
+    if (!user) return "";
+    return user.name?.split(" ")[0] || user.email?.split("@")[0] || "User";
   };
 
-  // Demo login button - Remove in production
-  const handleDemoLogin = () => {
-    const demoUser = { displayName: "Rahul Kumar", email: "rahul@example.com", photoURL: null };
-    localStorage.setItem("mockUser", JSON.stringify(demoUser));
-    // SPA-friendly fake reload: just navigate to keep state predictable
-    navigate(0 as any); // vite/react-router way to reload; or window.location.reload() if you prefer
+  const getUserInitial = () => {
+    if (!user) return "";
+    return (user.name?.[0] || user.email?.[0] || "U").toUpperCase();
   };
 
   return (
@@ -111,7 +83,7 @@ const Header = () => {
               ))}
             </div>
             <div className="flex items-center gap-4">
-              <span className="font-semibold"> Wholesale & Bulk Orders Available</span>
+              <span className="font-semibold">🎁 Wholesale & Bulk Orders Available</span>
               <div className="h-4 w-px bg-orange-300" />
               <span className="font-semibold">✅ ISO Certified Manufacturing</span>
             </div>
@@ -167,20 +139,9 @@ const Header = () => {
 
             {/* CTA Buttons - Desktop */}
             <div className="hidden lg:flex items-center gap-3">
-              {currentUser ? (
+              {user ? (
                 <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-700 hover:text-orange-600 hover:bg-orange-50 relative"
-                    onClick={() => navigate("/cart")}
-                  >
-                    <ShoppingCart size={20} />
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-600 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                      0
-                    </span>
-                  </Button>
-
+                  
                   <div className="relative user-menu-container">
                     <button
                       onClick={(e) => {
@@ -190,9 +151,9 @@ const Header = () => {
                       className="flex items-center gap-3 px-4 py-2 rounded-xl hover:bg-orange-50 transition-all duration-300 group border-2 border-transparent hover:border-orange-200"
                     >
                       <div className="relative">
-                        {currentUser.photoURL ? (
+                        {user.photoURL ? (
                           <img
-                            src={currentUser.photoURL}
+                            src={user.photoURL}
                             alt="Profile"
                             className="w-9 h-9 rounded-full object-cover ring-2 ring-orange-500 group-hover:ring-orange-600 transition-all duration-300"
                           />
@@ -217,9 +178,9 @@ const Header = () => {
                         {/* User Info Header */}
                         <div className="px-4 py-3 border-b border-gray-100">
                           <div className="flex items-center gap-3">
-                            {currentUser.photoURL ? (
+                            {user.photoURL ? (
                               <img
-                                src={currentUser.photoURL}
+                                src={user.photoURL}
                                 alt="Profile"
                                 className="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500"
                               />
@@ -230,32 +191,16 @@ const Header = () => {
                             )}
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-bold text-gray-900 truncate">
-                                {currentUser.displayName || "User"}
+                                {user.name || "User"}
                               </p>
                               <p className="text-xs text-gray-500 truncate">
-                                {currentUser.email}
+                                {user.email}
                               </p>
                             </div>
                           </div>
                         </div>
 
-                        {/* Menu Items */}
-                        <div className="py-2">
-                          {userMenuItems.map((item, index) => (
-                            <button
-                              key={index}
-                              onClick={() => {
-                                item.action();
-                                setShowUserMenu(false);
-                              }}
-                              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors group"
-                            >
-                              <item.icon size={18} className="text-gray-400 group-hover:text-orange-600" />
-                              <span className="font-medium">{item.label}</span>
-                            </button>
-                          ))}
-                        </div>
-
+                       
                         {/* Logout Button */}
                         <div className="border-t border-gray-100 pt-2">
                           <button
@@ -305,12 +250,12 @@ const Header = () => {
           {isMenuOpen && (
             <div className="lg:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top duration-300">
               {/* Mobile User Info (if logged in) */}
-              {currentUser && (
+              {user && (
                 <div className="px-4 py-3 mb-3 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
                   <div className="flex items-center gap-3">
-                    {currentUser.photoURL ? (
+                    {user.photoURL ? (
                       <img
-                        src={currentUser.photoURL}
+                        src={user.photoURL}
                         alt="Profile"
                         className="w-12 h-12 rounded-full object-cover ring-2 ring-orange-500"
                       />
@@ -323,7 +268,7 @@ const Header = () => {
                       <p className="text-sm font-bold text-gray-900">
                         Welcome, {getUserDisplayName()}!
                       </p>
-                      <p className="text-xs text-gray-600">{currentUser.email}</p>
+                      <p className="text-xs text-gray-600">{user.email}</p>
                     </div>
                   </div>
                 </div>
@@ -342,28 +287,16 @@ const Header = () => {
                 ))}
 
                 {/* Mobile User Menu Items (if logged in) */}
-                {currentUser && (
+                {user && (
                   <>
                     <div className="h-px bg-gray-200 my-2" />
-                    {userMenuItems.map((item, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          item.action();
-                          setIsMenuOpen(false);
-                        }}
-                        className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors font-semibold text-left"
-                      >
-                        <item.icon size={18} />
-                        <span>{item.label}</span>
-                      </button>
-                    ))}
+                    
                   </>
                 )}
 
                 {/* Mobile CTAs */}
                 <div className="pt-4 space-y-2 px-4">
-                  {currentUser ? (
+                  {user ? (
                     <>
                       <Button
                         variant="outline"
@@ -432,15 +365,6 @@ const Header = () => {
           )}
         </div>
       </header>
-
-      {/* Demo Button - Remove in Production */}
-      {!currentUser && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <Button onClick={handleDemoLogin} className="bg-green-600 hover:bg-green-700 text-white font-semibold shadow-2xl">
-            Demo Login (Click to Test)
-          </Button>
-        </div>
-      )}
     </>
   );
 };

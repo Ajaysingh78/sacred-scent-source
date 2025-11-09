@@ -1,6 +1,5 @@
 // src/components/auth/AuthPage.tsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +16,8 @@ import {
   ArrowRight,
   Sparkles,
   Shield,
-  Zap
+  Zap,
+  CheckCircle
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
@@ -27,9 +27,8 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState("");
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const { signup, login, loginWithGoogle } = useAuth();
+  const { signup, login, loginWithGoogle, user } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -68,23 +67,61 @@ const AuthPage = () => {
           description: "Welcome to Namami Enterprises family.",
         });
       }
-      navigate("/dashboard");
+      
+      // Reset form after successful login/signup
+      setFormData({ name: "", email: "", password: "" });
+      
     } catch (error: any) {
-      let errorMessage = "Something went wrong. Please try again.";
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = "Email already registered. Try logging in instead.";
-      } else if (error.code === "auth/wrong-password") {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (error.code === "auth/user-not-found") {
-        errorMessage = "No account found with this email. Please sign up.";
-      } else if (error.code === "auth/weak-password") {
-        errorMessage = "Password should be at least 6 characters long.";
-      } else if (error.code === "auth/invalid-email") {
-        errorMessage = "Please enter a valid email address.";
-      } else if (error.code === "auth/too-many-requests") {
-        errorMessage = "Too many attempts. Please try again later.";
+      console.error("Auth error:", error);
+      let errorMessage = error.message || "Something went wrong. Please try again.";
+      
+      // Handle Firebase error codes
+      if (error.code) {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            errorMessage = "Email already registered. Try logging in instead.";
+            break;
+          case "auth/wrong-password":
+          case "auth/invalid-credential":
+            errorMessage = "Incorrect password. Please try again.";
+            break;
+          case "auth/user-not-found":
+            errorMessage = "No account found with this email. Please sign up.";
+            break;
+          case "auth/weak-password":
+            errorMessage = "Password should be at least 6 characters long.";
+            break;
+          case "auth/invalid-email":
+            errorMessage = "Please enter a valid email address.";
+            break;
+          case "auth/too-many-requests":
+            errorMessage = "Too many attempts. Please try again later.";
+            break;
+          default:
+            errorMessage = error.message;
+        }
+      } else {
+        // Handle string-based error messages
+        if (errorMessage.includes("already registered") || errorMessage.includes("already exists")) {
+          errorMessage = "Email already registered. Try logging in instead.";
+        } else if (errorMessage.includes("wrong password") || errorMessage.includes("incorrect")) {
+          errorMessage = "Incorrect password. Please try again.";
+        } else if (errorMessage.includes("not found") || errorMessage.includes("no user")) {
+          errorMessage = "No account found with this email. Please sign up.";
+        } else if (errorMessage.includes("weak password") || errorMessage.includes("at least")) {
+          errorMessage = "Password should be at least 6 characters long.";
+        } else if (errorMessage.includes("invalid email")) {
+          errorMessage = "Please enter a valid email address.";
+        } else if (errorMessage.includes("too many")) {
+          errorMessage = "Too many attempts. Please try again later.";
+        }
       }
-      toast({ title: "Error", description: errorMessage, variant: "destructive" });
+      
+      toast({ 
+        title: "Error", 
+        description: errorMessage, 
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }
@@ -94,18 +131,63 @@ const AuthPage = () => {
     setLoading(true);
     try {
       await loginWithGoogle();
-      toast({ title: "Success! 🎉", description: "Logged in successfully with Google." });
-      navigate("/dashboard");
-    } catch {
+      toast({ 
+        title: "Success! 🎉", 
+        description: "Successfully signed in with Google." 
+      });
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
       toast({
         title: "Authentication Failed",
-        description: "Unable to sign in with Google. Please try again.",
+        description: error.message || "Unable to sign in with Google. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };
+
+  // Toggle between login and signup - reset form
+  const toggleAuthMode = (loginMode: boolean) => {
+    setIsLogin(loginMode);
+    setFormData({ name: "", email: "", password: "" });
+    setShowPassword(false);
+  };
+
+  // If user is already logged in, show success message
+  if (user) {
+    return (
+      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/30 to-orange-100/40 flex items-center justify-center p-4">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-orange-300/20 to-amber-300/20 rounded-full blur-3xl animate-pulse" />
+        </div>
+
+        {/* Success Card */}
+        <div className="relative max-w-md w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50 text-center animate-in zoom-in duration-500">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+            <CheckCircle className="w-10 h-10 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">You're All Set! ✨</h2>
+          <p className="text-gray-600 mb-6">
+            You're currently signed in as <span className="font-semibold text-orange-600">{user.name || user.email}</span>
+          </p>
+          <div className="space-y-3">
+            <Button
+              onClick={() => window.history.back()}
+              className="w-full h-12 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <ArrowRight className="mr-2 rotate-180" size={18} />
+              Go Back to Home
+            </Button>
+            <p className="text-sm text-gray-500 mt-4">
+              Use the profile menu in the navbar to manage your account
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/30 to-orange-100/40">
@@ -127,7 +209,6 @@ const AuthPage = () => {
         <div className="w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left Side - Branding & Features */}
-          {/* removed opacity-0 so content is visible */}
           <div className="hidden lg:block space-y-8">
             {/* Logo & Brand */}
             <div className="space-y-4">
@@ -212,7 +293,6 @@ const AuthPage = () => {
           {/* Right Side - Auth Form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">
             {/* Mobile Logo */}
-            {/* removed opacity-0 so visible on mobile */}
             <div className="lg:hidden text-center mb-8">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
@@ -235,15 +315,14 @@ const AuthPage = () => {
             </div>
 
             {/* Auth Card */}
-            {/* changed bg to bg-white (was bg-white/80) and removed opacity-0 */}
-            <div className="bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50 animate-slide-up">
+            <div className="bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50">
               {/* Welcome Text */}
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isLogin ? "Welcome Back! 👋" : "Create Your Account"}
                 </h2>
                 <p className="text-gray-600">
-                  {isLogin ? "Login to access your dashboard" : "Join us to get started today"}
+                  {isLogin ? "Login to access your account" : "Join us to get started today"}
                 </p>
               </div>
 
@@ -251,7 +330,7 @@ const AuthPage = () => {
               <div className="flex gap-2 mb-8 bg-gray-100/80 backdrop-blur-sm rounded-xl p-1.5">
                 <Button
                   type="button"
-                  onClick={() => setIsLogin(true)}
+                  onClick={() => toggleAuthMode(true)}
                   className={`flex-1 h-12 rounded-lg font-semibold transition-all duration-300 ${isLogin
                       ? "bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-lg shadow-orange-500/30 scale-105 hover:from-orange-700 hover:to-amber-600"
                       : "bg-transparent text-gray-600 hover:text-orange-600 hover:bg-transparent shadow-none"
@@ -262,7 +341,7 @@ const AuthPage = () => {
                 </Button>
                 <Button
                   type="button"
-                  onClick={() => setIsLogin(false)}
+                  onClick={() => toggleAuthMode(false)}
                   className={`flex-1 h-12 rounded-lg font-semibold transition-all duration-300 ${!isLogin
                       ? "bg-gradient-to-r from-orange-600 to-amber-500 text-white shadow-lg shadow-orange-500/30 scale-105 hover:from-orange-700 hover:to-amber-600"
                       : "bg-transparent text-gray-600 hover:text-orange-600 hover:bg-transparent shadow-none"
@@ -360,6 +439,7 @@ const AuthPage = () => {
                       onBlur={() => setFocusedField('')}
                       className="pl-12 pr-12 h-12 bg-white border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all duration-300 font-medium"
                       required
+                      minLength={6}
                     />
                     <button
                       type="button"
@@ -419,24 +499,10 @@ const AuthPage = () => {
                 </svg>
                 <span className="text-gray-700 group-hover:text-gray-900">Continue with Google</span>
               </Button>
-
-              {/* Go to Dashboard */}
-              <div className="mt-8 text-center">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => navigate("/dashboard")}
-                  className="text-sm text-gray-600 hover:text-orange-600 font-semibold transition-colors inline-flex items-center gap-2 group hover:bg-transparent"
-                >
-                  <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span>
-                  Go to Dashboard
-                </Button>
-              </div>
-
             </div>
 
             {/* Footer Note */}
-            <p className="text-center text-sm text-gray-600 mt-6" style={{ animationDelay: '0.3s' }}>
+            <p className="text-center text-sm text-gray-600 mt-6">
               By continuing, you agree to our{" "}
               <button
                 type="button"
