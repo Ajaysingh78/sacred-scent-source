@@ -23,8 +23,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "postbuild": "node scripts/generate-sitemap.js"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
