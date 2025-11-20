@@ -11,15 +11,14 @@ import type { LucideProps } from "lucide-react"; // <-- use LucideProps
 import machine1 from "@/assets/mimg1.jpeg";
 import machine2 from "@/assets/mimg2.jpeg";
 import machine3 from "@/assets/mimg3.jpeg";
+import machine4 from "@/assets/mimg4.jpeg";       
+import machine5 from "@/assets/mimg5.jpeg";
+
+// Import part images from assets 
 
 
-// Import parts images from assets
-import part1 from "@/assets/img44.png";
-import part2 from "@/assets/img55.png";
-import part3 from "@/assets/img66.png";
-import part4 from "@/assets/img77.png";
-import part5 from "@/assets/img99.png";
-import part6 from "@/assets/img21.png";
+
+
 
 type Machine = {
   id: number;
@@ -74,59 +73,27 @@ const MachinerySection = () => {
       specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
       gradient: "from-orange-500 to-red-600",
     },
-   
-  ];
-
-  const parts: Part[] = [
     {
-      id: 1,
-      name: "Rocket Die Set",
-      image: part1,
-      material: "Stainless Steel 304",
-      compatibility: "Compatible with all RX series machines",
-      gradient: "from-blue-500 to-cyan-600",
-    },
-    {
-      id: 2,
-      name: "Motor Assembly",
-      image: part2,
-      material: "Industrial Grade",
-      compatibility: "2 HP & 3 HP variants available",
-      gradient: "from-purple-500 to-pink-600",
-    },
-    {
-      id: 3,
-      name: "Conveyor Belt",
-      image: part3,
-      material: "Heat Resistant",
-      compatibility: "Custom sizes for all models",
+      id: 4,
+      name: "Drying Chamber Unit",
+      image: machine4,
+      description: "Energy-efficient drying chamber with temperature control for perfect agarbatti finishing.",
+      specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
       gradient: "from-orange-500 to-red-600",
     },
     {
-      id: 4,
-      name: "Control Panel",
-      image: part4,
-      material: "Digital Controller",
-      compatibility: "Universal mounting system",
-      gradient: "from-green-500 to-teal-600",
-    },
-    {
       id: 5,
-      name: "Gear & Bearing Set",
-      image: part5,
-      material: "Chrome Steel",
-      compatibility: "Precision engineered for smooth operation",
-      gradient: "from-indigo-500 to-blue-600",
+      name: "Drying Chamber Unit",
+      image: machine5,
+      description: "Energy-efficient drying chamber with temperature control for perfect agarbatti finishing.",
+      specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
+      gradient: "from-orange-500 to-red-600",
     },
-    {
-      id: 6,
-      name: "Heating Element",
-      image: part6,
-      material: "Ceramic Core",
-      compatibility: "For drying chambers and dryers",
-      gradient: "from-amber-500 to-orange-600",
-    },
+   
   ];
+
+ 
+  
 
   const services: Service[] = [
     {
@@ -283,35 +250,7 @@ const MachinerySection = () => {
           </div>
         </div>
 
-        {/* PARTS SECTION */}
-        <div className="mb-24">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-              <Package size={16} />
-              <span>Spare Parts Available</span>
-            </div>
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Genuine Spare Parts & Components
-            </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              High-quality replacement parts for uninterrupted production
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {parts.map((part) => (
-              <ProductCard
-                key={part.id}
-                image={part.image}
-                title={part.name}
-                description={part.compatibility}
-                details={[part.material, "In Stock", "Fast Delivery"]}
-                gradient={part.gradient}
-                onEnquire={() => handleWhatsAppEnquiry(part.name, "part")}
-              />
-            ))}
-          </div>
-        </div>
+       
 
         {/* SERVICES SECTION */}
         <div className="mb-16">

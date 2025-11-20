@@ -17,7 +17,7 @@ import factoryImage3 from "@/assets/pwangurjar.jpeg";
 
 const AboutSection = () => {
   const certifications = [
-    "ISO 9001:2015",
+    
     "100% Natural",
     "Handcrafted",
     "Export Quality",

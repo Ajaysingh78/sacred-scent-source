@@ -78,7 +78,7 @@ const NamamiHero = () => {
               <div className="group relative inline-flex items-center gap-3 px-6 py-3 rounded-full border border-orange-500/30 bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-orange-500/10 backdrop-blur-xl hover:border-orange-400/50 transition-all duration-500 hover:shadow-lg hover:shadow-orange-500/20">
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-orange-500/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
                 <Award className="text-orange-400 w-5 h-5 animate-pulse-subtle" />
-                <span className="text-sm font-bold text-white/95 tracking-wide">ISO 9001:2015 Certified</span>
+                <span className="text-sm font-bold text-white/95 tracking-wide">Trusted Manufacturer</span>
                 <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
                 <span className="text-sm font-semibold text-white/80">5000+ Orders Delivered</span>
                 <Shield className="text-orange-400 w-5 h-5" />
@@ -131,7 +131,7 @@ const NamamiHero = () => {
                 <div className="hidden sm:block w-px h-5 bg-white/20" />
                 <div className="flex items-center gap-2.5 group cursor-default">
                   <CheckCircle className="w-5 h-5 text-orange-400" />
-                  <span className="font-medium group-hover:text-white/90 transition-colors">99.9% Quality Guaranteed</span>
+                  <span className="font-medium group-hover:text-white/90 transition-colors">Quality Guaranteed</span>
                 </div>
               </div>
             </div>
@@ -158,9 +158,9 @@ const NamamiHero = () => {
                   iconBg: 'from-orange-500/20 to-amber-500/20'
                 },
                 { 
-                  value: 'ISO', 
-                  label: 'Certified Quality', 
-                  sublabel: 'Zero compromise',
+                  value: '100%', 
+                  label: 'Quality Products', 
+                  sublabel: 'Premium materials',
                   icon: Shield, 
                   gradient: 'from-blue-400 via-cyan-400 to-blue-500',
                   bgGradient: 'from-blue-500/10 via-cyan-500/5 to-blue-500/10',
@@ -191,8 +191,8 @@ const NamamiHero = () => {
               {[
                 { 
                   icon: Shield, 
-                  text: 'ISO-Certified Quality', 
-                  subtext: 'Rigorous quality standards',
+                  text: 'Premium Quality', 
+                  subtext: 'Tested & verified materials',
                   color: 'blue'
                 },
                 { 

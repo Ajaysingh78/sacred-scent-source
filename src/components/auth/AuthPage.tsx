@@ -27,6 +27,7 @@ const AuthPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState("");
+  const [imageError, setImageError] = useState(false);
   const { toast } = useToast();
   const { signup, login, loginWithGoogle, user } = useAuth();
 
@@ -68,14 +69,12 @@ const AuthPage = () => {
         });
       }
       
-      // Reset form after successful login/signup
       setFormData({ name: "", email: "", password: "" });
       
     } catch (error: any) {
       console.error("Auth error:", error);
       let errorMessage = error.message || "Something went wrong. Please try again.";
       
-      // Handle Firebase error codes
       if (error.code) {
         switch (error.code) {
           case "auth/email-already-in-use":
@@ -99,21 +98,6 @@ const AuthPage = () => {
             break;
           default:
             errorMessage = error.message;
-        }
-      } else {
-        // Handle string-based error messages
-        if (errorMessage.includes("already registered") || errorMessage.includes("already exists")) {
-          errorMessage = "Email already registered. Try logging in instead.";
-        } else if (errorMessage.includes("wrong password") || errorMessage.includes("incorrect")) {
-          errorMessage = "Incorrect password. Please try again.";
-        } else if (errorMessage.includes("not found") || errorMessage.includes("no user")) {
-          errorMessage = "No account found with this email. Please sign up.";
-        } else if (errorMessage.includes("weak password") || errorMessage.includes("at least")) {
-          errorMessage = "Password should be at least 6 characters long.";
-        } else if (errorMessage.includes("invalid email")) {
-          errorMessage = "Please enter a valid email address.";
-        } else if (errorMessage.includes("too many")) {
-          errorMessage = "Too many attempts. Please try again later.";
         }
       }
       
@@ -146,28 +130,55 @@ const AuthPage = () => {
     }
   };
 
-  // Toggle between login and signup - reset form
   const toggleAuthMode = (loginMode: boolean) => {
     setIsLogin(loginMode);
     setFormData({ name: "", email: "", password: "" });
     setShowPassword(false);
   };
 
-  // If user is already logged in, show success message
+  // Get user initials
+  const getUserInitials = () => {
+    if (user?.name) {
+      const names = user.name.split(' ');
+      if (names.length >= 2) {
+        return names[0][0] + names[1][0];
+      }
+      return user.name.substring(0, 2);
+    }
+    if (user?.email) {
+      return user.email[0];
+    }
+    return 'U';
+  };
+
+  // If user is already logged in
   if (user) {
     return (
       <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/30 to-orange-100/40 flex items-center justify-center p-4">
-        {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-orange-300/20 to-amber-300/20 rounded-full blur-3xl animate-pulse" />
         </div>
 
-        {/* Success Card */}
         <div className="relative max-w-md w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50 text-center animate-in zoom-in duration-500">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-            <CheckCircle className="w-10 h-10 text-white" />
+          {/* Profile Photo or Initials */}
+          <div className="flex justify-center mb-6">
+            {user.photoURL && !imageError ? (
+              <img
+                src={user.photoURL}
+                alt={user.name || 'User'}
+                className="w-20 h-20 rounded-full object-cover border-4 border-green-500 shadow-xl animate-bounce"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center border-4 border-green-500 shadow-xl animate-bounce">
+                <span className="text-white font-bold text-2xl uppercase">
+                  {getUserInitials()}
+                </span>
+              </div>
+            )}
           </div>
+
           <h2 className="text-2xl font-bold text-gray-900 mb-2">You're All Set! ✨</h2>
           <p className="text-gray-600 mb-6">
             You're currently signed in as <span className="font-semibold text-orange-600">{user.name || user.email}</span>
@@ -191,7 +202,6 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50/30 to-orange-100/40">
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-orange-400/20 to-amber-400/20 rounded-full blur-3xl animate-pulse" />
         <div
@@ -204,13 +214,11 @@ const AuthPage = () => {
         />
       </div>
 
-      {/* Main Container */}
       <div className="relative min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left Side - Branding & Features */}
           <div className="hidden lg:block space-y-8">
-            {/* Logo & Brand */}
             <div className="space-y-4">
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-110 hover:rotate-3 transition-all duration-300 overflow-hidden">
@@ -234,7 +242,6 @@ const AuthPage = () => {
               </div>
             </div>
 
-            {/* Feature Cards */}
             <div className="space-y-4 mt-12">
               <div className="group bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-orange-100/50 hover:bg-white/80 hover:border-orange-200 transition-all duration-300 hover:shadow-xl hover:translate-x-2 cursor-pointer">
                 <div className="flex items-start gap-4">
@@ -273,7 +280,6 @@ const AuthPage = () => {
               </div>
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-orange-100">
               <div className="text-center">
                 <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-500 bg-clip-text text-transparent">5K+</div>
@@ -292,7 +298,6 @@ const AuthPage = () => {
 
           {/* Right Side - Auth Form */}
           <div className="w-full max-w-md mx-auto lg:mx-0">
-            {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-8">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
@@ -314,9 +319,7 @@ const AuthPage = () => {
               <p className="text-gray-600 mt-2 font-medium">Premium Quality • Trusted Partner</p>
             </div>
 
-            {/* Auth Card */}
             <div className="bg-white backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50">
-              {/* Welcome Text */}
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">
                   {isLogin ? "Welcome Back! 👋" : "Create Your Account"}
@@ -326,7 +329,6 @@ const AuthPage = () => {
                 </p>
               </div>
 
-              {/* Toggle Login/Signup */}
               <div className="flex gap-2 mb-8 bg-gray-100/80 backdrop-blur-sm rounded-xl p-1.5">
                 <Button
                   type="button"
@@ -352,7 +354,6 @@ const AuthPage = () => {
                 </Button>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-5">
                 {!isLogin && (
                   <div className="space-y-2">
@@ -381,7 +382,6 @@ const AuthPage = () => {
                   </div>
                 )}
 
-                {/* Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
                     Email Address
@@ -407,7 +407,6 @@ const AuthPage = () => {
                   </div>
                 </div>
 
-                {/* Password */}
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
                     <Label htmlFor="password" className="text-sm font-semibold text-gray-700">
@@ -451,7 +450,6 @@ const AuthPage = () => {
                   </div>
                 </div>
 
-                {/* Submit */}
                 <Button
                   type="submit"
                   disabled={loading}
@@ -471,7 +469,6 @@ const AuthPage = () => {
                 </Button>
               </form>
 
-              {/* Divider */}
               <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t-2 border-gray-200"></div>
@@ -483,7 +480,6 @@ const AuthPage = () => {
                 </div>
               </div>
 
-              {/* Google Sign In */}
               <Button
                 type="button"
                 variant="outline"
@@ -501,7 +497,6 @@ const AuthPage = () => {
               </Button>
             </div>
 
-            {/* Footer Note */}
             <p className="text-center text-sm text-gray-600 mt-6">
               By continuing, you agree to our{" "}
               <button
