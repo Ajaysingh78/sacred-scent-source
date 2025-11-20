@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Phone, Mail, MapPin, LogOut, ShoppingCart } from "lucide-react";
 import logo from "@/assets/logo.png";
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
 
   // alias map: common fragment -> actual id on page
   const fragmentAliasMap: Record<string, string> = {
-    services: "machinery-services", // <- important fallback (so #services still works)
+    services: "machinery-services", // fallback if your page uses a different id
     machinery: "machinery-services",
     products: "products",
     home: "home",
@@ -91,26 +91,64 @@ const Header: React.FC = () => {
     "why-choose-us": "why-choose-us",
   };
 
-  const scrollToHash = (hash: string, closeMenu = false) => {
+  /**
+   * scrollToHash
+   * - robustly finds target by id / name / data attributes / aria-label / class fallback
+   * - always performs a scroll (even if the hash is already the same)
+   * - optional closeMenu to close mobile menu after clicking
+   */
+  const scrollToHash = useCallback((hash: string, closeMenu = false) => {
     const idRaw = hash.replace(/^#/, "");
-    const triedIds = [idRaw];
+    const triedIds = new Set<string>();
+    triedIds.add(idRaw);
 
-    // add alias fallback if exists
+    // alias fallback (if page uses different id)
     if (fragmentAliasMap[idRaw] && fragmentAliasMap[idRaw] !== idRaw) {
-      triedIds.push(fragmentAliasMap[idRaw]);
+      triedIds.add(fragmentAliasMap[idRaw]);
     }
 
-    // also try lowercased versions for safety
-    triedIds.push(...triedIds.map((s) => s.toLowerCase()));
+    // try a few normalized variants
+    triedIds.add(idRaw.toLowerCase());
+    triedIds.add(idRaw.replace(/\s+/g, "-").toLowerCase());
 
     let target: Element | null = null;
-    for (const candidate of triedIds) {
-      target = document.getElementById(candidate) || document.querySelector(`[name="${candidate}"]`);
+
+    // 1) exact id or name
+    for (const id of Array.from(triedIds)) {
+      target = document.getElementById(id) || document.querySelector(`[name="${id}"]`);
       if (target) break;
     }
 
+    // 2) try data-section / data-anchor attributes (common patterns)
     if (!target) {
-      // fallback: push hash anyway and warn
+      for (const id of Array.from(triedIds)) {
+        target = document.querySelector(`[data-section="${id}"], [data-anchor="${id}"]`);
+        if (target) break;
+      }
+    }
+
+    // 3) try aria-labelledby or aria-label match (less reliable)
+    if (!target) {
+      for (const id of Array.from(triedIds)) {
+        target = document.querySelector(`[aria-labelledby="${id}"], [aria-label="${id}"]`);
+        if (target) break;
+      }
+    }
+
+    // 4) try elements with class that contains the id (e.g., .section-services)
+    if (!target) {
+      for (const id of Array.from(triedIds)) {
+        const maybe = document.querySelector(`[class*="${id}"]`);
+        if (maybe) {
+          target = maybe;
+          break;
+        }
+      }
+    }
+
+    // If still not found: warn and just set hash (so user can copy link) and close menu
+    if (!target) {
+      console.warn(`Header: target not found for hash '#${idRaw}'. Tried: ${Array.from(triedIds).join(", ")}`);
       try {
         if (history && history.pushState) {
           history.pushState(null, "", `#${idRaw}`);
@@ -120,34 +158,57 @@ const Header: React.FC = () => {
       } catch (e) {
         // ignore
       }
-      console.warn(`Header: target not found for hash '#${idRaw}'. Tried: ${JSON.stringify(triedIds)}`);
       if (closeMenu) setIsMenuOpen(false);
       return;
     }
 
+    // Compute offset to account for sticky header
     const headerEl = document.querySelector('header[role="banner"]') as HTMLElement | null;
     const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
-    const extraOffset = 12;
-    const top = window.scrollY + (target as HTMLElement).getBoundingClientRect().top - headerHeight - extraOffset;
+    const extraOffset = 12; // extra spacing
 
-    window.scrollTo({ top: Math.max(0, Math.floor(top)), behavior: "smooth" });
+    const targetRect = (target as HTMLElement).getBoundingClientRect();
+    const absoluteTop = window.scrollY + targetRect.top - headerHeight - extraOffset;
+    const finalTop = Math.max(0, Math.floor(absoluteTop));
 
+    // Always perform scroll, even if current hash equals target hash.
+    window.scrollTo({ top: finalTop, behavior: "smooth" });
+
+    // Update URL hash cleanly (so links are shareable)
     try {
+      const newHash = `#${(target as HTMLElement).id || idRaw}`;
       if (history && history.pushState) {
-        history.pushState(null, "", `#${(target as HTMLElement).id || idRaw}`);
+        history.pushState(null, "", newHash);
       } else {
-        window.location.hash = `#${(target as HTMLElement).id || idRaw}`;
+        // this may not trigger a hashchange if same, but we already scrolled above
+        window.location.hash = newHash;
       }
     } catch (e) {
       // ignore
     }
 
     if (closeMenu) setIsMenuOpen(false);
-  };
+  }, []);
 
   const handleNavClick = (e: React.MouseEvent, href: string, closeMenu = false) => {
     e.preventDefault();
     scrollToHash(href, closeMenu);
+  };
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // close any open menus
+    setIsMenuOpen(false);
+    setShowUserMenu(false);
+
+    // scroll to top and set #home
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    try {
+      if (history && history.pushState) history.pushState(null, "", "#home");
+      else window.location.hash = "#home";
+    } catch (err) {
+      // ignore
+    }
   };
 
   return (
@@ -175,7 +236,7 @@ const Header: React.FC = () => {
             <div className="flex items-center gap-4">
               <span className="font-semibold">🎁 Wholesale & Bulk Orders Available</span>
               <div className="h-4 w-px bg-orange-300" aria-hidden="true" />
-              <span className="font-semibold">✅ ISO Certified Manufacturing</span>
+              <span className="font-semibold">Certified Manufacturing</span>
             </div>
           </div>
         </div>
@@ -192,7 +253,7 @@ const Header: React.FC = () => {
           <div className="flex items-center justify-between h-20">
             <a
               href="#home"
-              onClick={(e) => handleNavClick(e, "#home")}
+              onClick={handleLogoClick}
               className="flex items-center space-x-3 group"
               aria-label="Namami Enterprises - Premium Agarbatti Manufacturer"
               itemScope
