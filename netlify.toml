@@ -11,6 +11,8 @@
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
+  NPM_FLAGS = "--include=dev"
+  NODE_ENV = "production"
 
 # ============================================
 # REDIRECTS - SEO Critical (301 Permanent)
@@ -137,21 +139,6 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, must-revalidate"
     Content-Type = "text/plain; charset=utf-8"
-
-# ============================================
-# PLUGINS (Optional but Recommended)
-# ============================================
-
-# Automatic Sitemap Generation (if using plugin)
-# [[plugins]]
-#   package = "@netlify/plugin-sitemap"
-#   [plugins.inputs]
-#     buildDir = "dist"
-#     exclude = ["/admin", "/api"]
-
-# Image Optimization Plugin
-# [[plugins]]
-#   package = "netlify-plugin-image-optim"
 
 # ============================================
 # CONTEXT-SPECIFIC SETTINGS
