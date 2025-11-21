@@ -6,17 +6,13 @@
 # ============================================
 [build]
   publish = "dist"
-  command = "npm ci && npm run build"
-
+  command = "npm run build"
+  
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
-<<<<<<< HEAD
   NPM_FLAGS = "--include=dev"
   NODE_ENV = "production"
-=======
-  NPM_FLAGS = "--legacy-peer-deps"
->>>>>>> 3f57b0d897d5b4c354fc2b8c85c8def5138b5d49
 
 # ============================================
 # REDIRECTS - SEO Critical (301 Permanent)
