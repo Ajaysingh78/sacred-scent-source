@@ -288,11 +288,11 @@ const ContactSection = () => {
           
           <div className="relative w-full h-[500px]">
             <iframe
-              src="https://www.google.com/maps?q=95A%2C%20Ved%20Mata%20Gayatri%20Nagar%2C%20SDA%20Compound%2C%20Indore%2C%20Madhya%20Pradesh%20452010&z=19&hl=en&output=embed"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.3134682385956!2d75.89684607516983!3d22.719484379374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fd2c3a5c7f9f%3A0x1234567890abcdef!2s95A%2C%20Ved%20Mata%20Gayatri%20Nagar%2C%20SDA%20Compound%2C%20Indore%2C%20Madhya%20Pradesh%20452010!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              allowFullScreen
+              allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Namami Enterprises Factory Location"
