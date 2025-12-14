@@ -7,7 +7,7 @@
 [build]
   publish = "dist"
   command = "npm run build"
-  
+
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "9"
@@ -18,14 +18,12 @@
 # REDIRECTS - SEO Critical (301 Permanent)
 # ============================================
 
-# Force HTTPS (if not already enforced)
 [[redirects]]
   from = "http://namamienterprises.in/*"
   to = "https://namamienterprises.in/:splat"
   status = 301
   force = true
 
-# WWW to non-WWW redirect (Canonical URL)
 [[redirects]]
   from = "https://www.namamienterprises.in/*"
   to = "https://namamienterprises.in/:splat"
@@ -38,42 +36,39 @@
   status = 301
   force = true
 
-# SPA Routing - All routes to index.html (for React Router)
+# SPA Routing (React Router)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
 # ============================================
-# HEADERS - Security & Performance (CRITICAL)
+# HEADERS - SECURITY (FIXED)
 # ============================================
 
 [[headers]]
   for = "/*"
   [headers.values]
-    # Security Headers
-    X-Frame-Options = "DENY"
+
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=()"
-    
-    # HSTS - Force HTTPS for 1 year
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    
-    # Content Security Policy (Adjust based on your needs)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://api.anthropic.com"
-    
-    # Cache Control - Default
+
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://api.anthropic.com; frame-src 'self' https://www.google.com https://www.google.com/maps https://maps.google.com"
+
     Cache-Control = "public, max-age=3600, must-revalidate"
 
-# Static Assets - Aggressive Caching (1 year)
+# ============================================
+# STATIC CACHE
+# ============================================
+
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Images - Cache for 30 days
 [[headers]]
   for = "*.jpg"
   [headers.values]
@@ -99,7 +94,6 @@
   [headers.values]
     Cache-Control = "public, max-age=2592000, immutable"
 
-# Fonts - Cache for 1 year
 [[headers]]
   for = "*.woff"
   [headers.values]
@@ -110,7 +104,6 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# CSS & JS - Cache for 1 year (with hash)
 [[headers]]
   for = "*.css"
   [headers.values]
@@ -121,39 +114,19 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# HTML - No cache (always fresh)
 [[headers]]
   for = "*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Sitemap & Robots - Cache for 1 day
 [[headers]]
   for = "/sitemap*.xml"
   [headers.values]
-    Cache-Control = "public, max-age=86400, must-revalidate"
+    Cache-Control = "public, max-age=86400"
     Content-Type = "application/xml; charset=utf-8"
 
 [[headers]]
   for = "/robots.txt"
   [headers.values]
-    Cache-Control = "public, max-age=86400, must-revalidate"
+    Cache-Control = "public, max-age=86400"
     Content-Type = "text/plain; charset=utf-8"
-
-# ============================================
-# CONTEXT-SPECIFIC SETTINGS
-# ============================================
-
-# Production
-[context.production]
-  command = "npm run build"
-  [context.production.environment]
-    NODE_ENV = "production"
-
-# Deploy Preview
-[context.deploy-preview]
-  command = "npm run build"
-
-# Branch Deploy
-[context.branch-deploy]
-  command = "npm run build"
