@@ -1,47 +1,38 @@
-import { Wrench, Package, Headphones, Shield, Award, Zap, MessageCircle, CheckCircle, icons } from "lucide-react";
+import { Wrench, Package, Headphones, Shield, Award, Zap, MessageCircle, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import React from "react";
+import React, { useState } from "react";
 
-import type { LucideProps } from "lucide-react"; // <-- use LucideProps
-
+import type { LucideProps } from "lucide-react";
 
 // Import machine images from assets
-import machine1 from "@/assets/mimg1.jpeg";
-import machine2 from "@/assets/mimg2.jpeg";
-import machine3 from "@/assets/mimg3.jpeg";
-import machine4 from "@/assets/mimg4.jpeg";       
+import machine1 from "@/assets/mimg1A.jpeg";
+import machine2 from "@/assets/mimg2A.jpeg";
+import machine3 from "@/assets/mimg3A.png";
+import machine4 from "@/assets/mimg4.jpeg";
 import machine5 from "@/assets/mimg5.jpeg";
-
-// Import part images from assets 
-
-
-
+import machine6 from "@/assets/mimg1B.jpeg";
+import machine7 from "@/assets/mimg1C.jpeg";
+import machine8 from "@/assets/mimg1D.jpeg";
+import machine9 from "@/assets/mimg2B.jpeg";
+import machine10 from "@/assets/mimg3B.png";
+import machine11 from "@/assets/mimg4A.jpeg";
+import machine12 from "@/assets/mimg4B.jpeg";
 
 
 type Machine = {
   id: number;
   name: string;
-  image: string;
+  images: string[]; // Changed from image to images array
   description: string;
   specs: string[];
-  gradient: string;
-};
-
-type Part = {
-  id: number;
-  name: string;
-  image: string;
-  material: string;
-  compatibility: string;
   gradient: string;
 };
 
 type Service = {
   title: string;
   description: string;
-  // icon accepts LucideProps (size, className, etc.)
   icon: React.ComponentType<LucideProps>;
 };
 
@@ -52,15 +43,15 @@ const MachinerySection = () => {
     {
       id: 1,
       name: "Automatic Stick Machine",
-      image: machine1,
+      images: [machine1, machine6, machine7, machine8], // Multiple images
       description: "High-speed automatic agarbatti making machine with precision control and consistent output.",
       specs: ["10-15 kg/hr", "2 HP Motor", "Stainless Steel"],
       gradient: "from-blue-500 to-cyan-600",
     },
     {
       id: 2,
-      name: "Powder Mixing Machine",
-      image: machine2,
+      name: "Camphor Tablets Machine",
+      images: [machine2, machine9],
       description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
       specs: ["50 kg capacity", "3 HP Motor", "SS Construction"],
       gradient: "from-purple-500 to-pink-600",
@@ -68,32 +59,46 @@ const MachinerySection = () => {
     {
       id: 3,
       name: "Drying Chamber Unit",
-      image: machine3,
+      images: [machine3, machine10],
       description: "Energy-efficient drying chamber with temperature control for perfect agarbatti finishing.",
       specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
       gradient: "from-orange-500 to-red-600",
     },
     {
       id: 4,
-      name: "Drying Chamber Unit",
-      image: machine4,
-      description: "Energy-efficient drying chamber with temperature control for perfect agarbatti finishing.",
-      specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
-      gradient: "from-orange-500 to-red-600",
+      name:"Powder Mixing Machine",
+      images: [machine11, machine12],
+      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
+      specs: ["40 kg primix + 25 kg water ", "3 HP Motor", "SS Construction"],
+      gradient: "from-purple-500 to-pink-600",
+    },
+    {
+      id: 4,
+      name:  "Powder Mixing Machine",
+      images: [machine11, machine12],
+      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
+      specs: ["25 kg primix + 15 kg water", "2 HP Motor", "SS Construction"],
+      gradient: "from-purple-500 to-pink-600",
     },
     {
       id: 5,
-      name: "Drying Chamber Unit",
-      image: machine5,
-      description: "Energy-efficient drying chamber with temperature control for perfect agarbatti finishing.",
-      specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
-      gradient: "from-orange-500 to-red-600",
+      name:  "Powder Mixing Machine",
+      images: [machine11, machine12],
+      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
+      specs: ["15 kg primix + 10 kg water ", "1 HP Motor", "SS Construction"],
+      gradient: "from-purple-500 to-pink-600",
     },
-   
-  ];
-
- 
+     {
+      id: 6,
+      name:  "Powder Mixing Machine",
+      images: [machine11, machine12],
+      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
+      specs: ["60 kg primix + 40 kg water  ", "5 HP Motor", "SS Construction"],
+      gradient: "from-purple-500 to-pink-600",
+    },
   
+
+  ];
 
   const services: Service[] = [
     {
@@ -136,64 +141,111 @@ const MachinerySection = () => {
     window.open(whatsappUrl, "_blank");
   };
 
-  const ProductCard = ({ 
-    image, 
-    title, 
-    description, 
-    details, 
-    gradient, 
-    onEnquire 
-  }: { 
-    image: string; 
-    title: string; 
-    description: string; 
-    details: string[]; 
-    gradient: string; 
+  const ProductCard = ({
+    images,
+    title,
+    description,
+    details,
+    gradient,
+    onEnquire
+  }: {
+    images: string[];
+    title: string;
+    description: string;
+    details: string[];
+    gradient: string;
     onEnquire: () => void;
-  }) => (
-    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-500 h-full flex flex-col">
-      <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
-        />
-        <div className={`absolute inset-0 bg-gradient-to-t ${gradient} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
-      </div>
+  }) => {
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-      <div className="p-6 flex-grow flex flex-col">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
-          {title}
-        </h3>
-        
-        <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">
-          {description}
-        </p>
+    const nextImage = () => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    };
 
-        <div className="space-y-2 mb-5">
-          {details.map((detail, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-sm">
-              <CheckCircle size={16} className="text-green-600 flex-shrink-0" />
-              <span className="text-gray-700">{detail}</span>
-            </div>
-          ))}
+    const prevImage = () => {
+      setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    };
+
+    return (
+      <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-500 h-full flex flex-col">
+        <div className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+          <img
+            src={images[currentImageIndex]}
+            alt={`${title} - Image ${currentImageIndex + 1}`}
+            className="w-full h-full object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className={`absolute inset-0 bg-gradient-to-t ${gradient} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} />
+
+          {/* Image Navigation Controls */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={20} className="text-gray-800" />
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} className="text-gray-800" />
+              </button>
+
+              {/* Image Indicator Dots */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentImageIndex
+                        ? 'bg-white w-6'
+                        : 'bg-white/50 hover:bg-white/80'
+                      }`}
+                    aria-label={`Go to image ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        <Button
-          className={`w-full bg-gradient-to-r ${gradient} hover:shadow-xl text-white font-semibold transition-all duration-300 group-hover:scale-105`}
-          onClick={onEnquire}
-        >
-          <MessageCircle size={18} className="mr-2" />
-          Enquire on WhatsApp
-        </Button>
-      </div>
-    </Card>
-  );
+        <div className="p-6 flex-grow flex flex-col">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-orange-600 transition-colors">
+            {title}
+          </h3>
+
+          <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">
+            {description}
+          </p>
+
+          <div className="space-y-2 mb-5">
+            {details.map((detail, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-sm">
+                <CheckCircle size={16} className="text-green-600 flex-shrink-0" />
+                <span className="text-gray-700">{detail}</span>
+              </div>
+            ))}
+          </div>
+
+          <Button
+            className={`w-full bg-gradient-to-r ${gradient} hover:shadow-xl text-white font-semibold transition-all duration-300 group-hover:scale-105`}
+            onClick={onEnquire}
+          >
+            <MessageCircle size={18} className="mr-2" />
+            Enquire on WhatsApp
+          </Button>
+        </div>
+      </Card>
+    );
+  };
 
   return (
     <section id="machinery-services" className="py-20 bg-gradient-to-b from-gray-50 via-white to-gray-50">
       <div className="container mx-auto px-4 max-w-7xl">
-        
+
         {/* Trust Badges */}
         <div className="flex flex-wrap justify-center gap-4 mb-16">
           <Badge variant="outline" className="px-5 py-2.5 text-sm font-semibold border-2 border-blue-500 text-blue-700 bg-blue-50">
@@ -239,7 +291,7 @@ const MachinerySection = () => {
             {machines.map((machine) => (
               <ProductCard
                 key={machine.id}
-                image={machine.image}
+                images={machine.images}
                 title={machine.name}
                 description={machine.description}
                 details={machine.specs}
@@ -249,8 +301,6 @@ const MachinerySection = () => {
             ))}
           </div>
         </div>
-
-       
 
         {/* SERVICES SECTION */}
         <div className="mb-16">
@@ -288,7 +338,7 @@ const MachinerySection = () => {
               <h4 className="text-2xl md:text-3xl font-bold mb-3">Why Choose Our Services?</h4>
               <p className="text-blue-100 text-lg">Comprehensive support that ensures your business runs smoothly</p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-5">
                 <CheckCircle size={24} className="text-green-300 flex-shrink-0 mt-1" />
@@ -297,7 +347,7 @@ const MachinerySection = () => {
                   <p className="text-sm text-blue-100">Expert setup support via phone or on-site visit</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-5">
                 <CheckCircle size={24} className="text-green-300 flex-shrink-0 mt-1" />
                 <div>
@@ -305,7 +355,7 @@ const MachinerySection = () => {
                   <p className="text-sm text-blue-100">Comprehensive training for your team members</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-5">
                 <CheckCircle size={24} className="text-green-300 flex-shrink-0 mt-1" />
                 <div>
@@ -313,7 +363,7 @@ const MachinerySection = () => {
                   <p className="text-sm text-blue-100">Always available for troubleshooting assistance</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm rounded-xl p-5">
                 <CheckCircle size={24} className="text-green-300 flex-shrink-0 mt-1" />
                 <div>
