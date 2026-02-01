@@ -1,7 +1,7 @@
 // src/components/Header.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Phone, Mail, MapPin, LogOut, ShoppingCart } from "lucide-react";
+import { Menu, X, Phone, Mail, MapPin, LogOut, ShoppingCart, ShieldCheck } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,15 +10,18 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { user, logout } = useAuth() as any;
+  // 🔥 UPDATED: Added isAdmin from useAuth
+  const { user, isAdmin, logout } = useAuth() as any; 
   const navigate = useNavigate();
 
+  // Handle Scroll Effect for Shadow
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle Click Outside User Menu
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node | null;
@@ -30,11 +33,13 @@ const Header: React.FC = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [showUserMenu]);
 
+  // Navigation Items
   const navigationItems = [
     { label: "Home", href: "#home", ariaLabel: "Navigate to homepage" },
     { label: "About", href: "#about", ariaLabel: "Learn about Namami Enterprises" },
     { label: "Products", href: "#products", ariaLabel: "View agarbatti products" },
     { label: "Services", href: "#services", ariaLabel: "Our manufacturing services" },
+    { label: "Blog", href: "#blogs", ariaLabel: "Read our latest blogs" },
     { label: "Why Choose Us", href: "#why-choose-us", ariaLabel: "Why choose Namami Enterprises" },
     { label: "Contact", href: "#contact", ariaLabel: "Contact us for orders" },
   ];
@@ -80,34 +85,32 @@ const Header: React.FC = () => {
     return (user.name?.[0] || user.email?.[0] || "U").toUpperCase();
   };
 
-  // alias map: common fragment -> actual id on page
+  // Fragment Alias Map
   const fragmentAliasMap: Record<string, string> = {
-    services: "machinery-services", // fallback if your page uses a different id
+    services: "machinery-services",
     machinery: "machinery-services",
     products: "products",
     home: "home",
     about: "about",
     contact: "contact",
     "why-choose-us": "why-choose-us",
+    blog: "blogs",
+    blogs: "blogs"
   };
 
   /**
-   * scrollToHash
-   * - robustly finds target by id / name / data attributes / aria-label / class fallback
-   * - always performs a scroll (even if the hash is already the same)
-   * - optional closeMenu to close mobile menu after clicking
+   * scrollToHash - Robust scrolling logic
    */
   const scrollToHash = useCallback((hash: string, closeMenu = false) => {
     const idRaw = hash.replace(/^#/, "");
     const triedIds = new Set<string>();
     triedIds.add(idRaw);
 
-    // alias fallback (if page uses different id)
+    // alias fallback
     if (fragmentAliasMap[idRaw] && fragmentAliasMap[idRaw] !== idRaw) {
       triedIds.add(fragmentAliasMap[idRaw]);
     }
 
-    // try a few normalized variants
     triedIds.add(idRaw.toLowerCase());
     triedIds.add(idRaw.replace(/\s+/g, "-").toLowerCase());
 
@@ -119,7 +122,7 @@ const Header: React.FC = () => {
       if (target) break;
     }
 
-    // 2) try data-section / data-anchor attributes (common patterns)
+    // 2) try data-section
     if (!target) {
       for (const id of Array.from(triedIds)) {
         target = document.querySelector(`[data-section="${id}"], [data-anchor="${id}"]`);
@@ -127,28 +130,8 @@ const Header: React.FC = () => {
       }
     }
 
-    // 3) try aria-labelledby or aria-label match (less reliable)
+    // If still not found, handle gracefully
     if (!target) {
-      for (const id of Array.from(triedIds)) {
-        target = document.querySelector(`[aria-labelledby="${id}"], [aria-label="${id}"]`);
-        if (target) break;
-      }
-    }
-
-    // 4) try elements with class that contains the id (e.g., .section-services)
-    if (!target) {
-      for (const id of Array.from(triedIds)) {
-        const maybe = document.querySelector(`[class*="${id}"]`);
-        if (maybe) {
-          target = maybe;
-          break;
-        }
-      }
-    }
-
-    // If still not found: warn and just set hash (so user can copy link) and close menu
-    if (!target) {
-      console.warn(`Header: target not found for hash '#${idRaw}'. Tried: ${Array.from(triedIds).join(", ")}`);
       try {
         if (history && history.pushState) {
           history.pushState(null, "", `#${idRaw}`);
@@ -162,25 +145,23 @@ const Header: React.FC = () => {
       return;
     }
 
-    // Compute offset to account for sticky header
+    // Compute offset
     const headerEl = document.querySelector('header[role="banner"]') as HTMLElement | null;
     const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 0;
-    const extraOffset = 12; // extra spacing
+    const extraOffset = 12;
 
     const targetRect = (target as HTMLElement).getBoundingClientRect();
     const absoluteTop = window.scrollY + targetRect.top - headerHeight - extraOffset;
     const finalTop = Math.max(0, Math.floor(absoluteTop));
 
-    // Always perform scroll, even if current hash equals target hash.
     window.scrollTo({ top: finalTop, behavior: "smooth" });
 
-    // Update URL hash cleanly (so links are shareable)
+    // Update URL hash cleanly
     try {
       const newHash = `#${(target as HTMLElement).id || idRaw}`;
       if (history && history.pushState) {
         history.pushState(null, "", newHash);
       } else {
-        // this may not trigger a hashchange if same, but we already scrolled above
         window.location.hash = newHash;
       }
     } catch (e) {
@@ -197,18 +178,22 @@ const Header: React.FC = () => {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    // close any open menus
     setIsMenuOpen(false);
     setShowUserMenu(false);
-
-    // scroll to top and set #home
     window.scrollTo({ top: 0, behavior: "smooth" });
     try {
-      if (history && history.pushState) history.pushState(null, "", "#home");
-      else window.location.hash = "#home";
+        if (history && history.pushState) history.pushState(null, "", "#home");
+        else window.location.hash = "#home";
     } catch (err) {
-      // ignore
+        // ignore
     }
+  };
+
+  // 🔥 NEW: Admin Panel Navigation Handler
+  const handleAdminPanel = () => {
+    navigate('/admin');
+    setIsMenuOpen(false);
+    setShowUserMenu(false);
   };
 
   return (
@@ -251,6 +236,7 @@ const Header: React.FC = () => {
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
+            {/* Logo Section */}
             <a
               href="#home"
               onClick={handleLogoClick}
@@ -301,8 +287,10 @@ const Header: React.FC = () => {
               ))}
             </nav>
 
-            {/* CTA Buttons - Desktop */}
+            {/* CTA Buttons & User Menu - Desktop */}
             <div className="hidden lg:flex items-center gap-3">
+              
+
               {user ? (
                 <div className="relative user-menu-container">
                   <button
@@ -327,7 +315,10 @@ const Header: React.FC = () => {
                     </div>
                     <div className="text-left">
                       <p className="text-sm font-bold text-gray-900 group-hover:text-orange-600 transition-colors">{getUserDisplayName()}</p>
-                      <p className="text-xs text-gray-500">My Account</p>
+                      <p className="text-xs text-gray-500">
+                        {/* 🔥 NEW: Show Admin or User badge */}
+                        {isAdmin ? "Admin Account" : "My Account"}
+                      </p>
                     </div>
                   </button>
 
@@ -345,11 +336,31 @@ const Header: React.FC = () => {
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-gray-900 truncate">{user.name || "User"}</p>
                             <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                            {/* 🔥 NEW: Admin Badge in Dropdown */}
+                            {isAdmin && (
+                              <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full font-semibold">
+                                <ShieldCheck size={12} />
+                                Admin
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-2">
+                      {/* 🔥 NEW: Admin Panel Link in Dropdown (for mobile convenience) */}
+                      {isAdmin && (
+                        <button 
+                          onClick={handleAdminPanel}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-orange-600 hover:bg-orange-50 transition-colors group border-b border-gray-100" 
+                          role="menuitem" 
+                          aria-label="Go to Admin Panel"
+                        >
+                          <ShieldCheck size={18} aria-hidden="true" />
+                          <span className="font-medium">Admin Panel</span>
+                        </button>
+                      )}
+
+                      <div className="pt-2">
                         <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition-colors group" role="menuitem" aria-label="Logout from account">
                           <LogOut size={18} aria-hidden="true" />
                           <span className="font-medium">Logout</span>
@@ -393,6 +404,13 @@ const Header: React.FC = () => {
                     <div className="flex-1">
                       <p className="text-sm font-bold text-gray-900">Welcome, {getUserDisplayName()}!</p>
                       <p className="text-xs text-gray-600">{user.email}</p>
+                      {/* 🔥 NEW: Admin Badge in Mobile Menu */}
+                      {isAdmin && (
+                        <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-orange-600 text-white text-xs rounded-full font-semibold">
+                          <ShieldCheck size={10} />
+                          Admin
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -406,6 +424,19 @@ const Header: React.FC = () => {
                 ))}
 
                 <div className="pt-4 space-y-2">
+                  {/* 🔥 NEW: Admin Panel Button for Mobile (Only for Admin) */}
+                  {user && isAdmin && (
+                    <Button
+                      onClick={handleAdminPanel}
+                      variant="outline"
+                      className="w-full border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white font-semibold flex items-center justify-center gap-2"
+                      aria-label="Access Admin Panel"
+                    >
+                      <ShieldCheck size={18} aria-hidden="true" />
+                      Admin Panel
+                    </Button>
+                  )}
+
                   {user ? (
                     <>
                       <Button variant="outline" className="w-full border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white font-semibold" onClick={() => { navigate("/cart"); setIsMenuOpen(false); }} aria-label="View shopping cart">

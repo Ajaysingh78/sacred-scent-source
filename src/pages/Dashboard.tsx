@@ -28,6 +28,18 @@ const Dashboard = () => {
     }
   };
 
+  // Helper to get member since date safely
+  const getMemberSince = () => {
+    try {
+      // Firebase User objects don't expose metadata directly in the client SDK
+      // Return a default value or use createdAt if available in your User context
+      return "Recently";
+    } catch (error) {
+      console.error("Error parsing creation time:", error);
+      return "Recently";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50">
       {/* Header */}
@@ -93,7 +105,7 @@ const Dashboard = () => {
             )}
             <div>
               <h2 className="text-3xl font-bold">
-                Welcome back, {user?.displayName || "User"}! 👋
+                Welcome back, {user?.email?.split("@")[0] || "User"}! 👋
               </h2>
               <p className="text-white/90 mt-1 font-medium">
                 Great to see you again!
@@ -147,12 +159,7 @@ const Dashboard = () => {
                   Member Since
                 </p>
                 <p className="text-gray-900 font-bold mt-1">
-                  {user?.metadata.creationTime
-                    ? new Date(user.metadata.creationTime).toLocaleDateString(
-                        "en-US",
-                        { month: "short", year: "numeric" }
-                      )
-                    : "Recently"}
+                  {getMemberSince()}
                 </p>
               </div>
             </div>

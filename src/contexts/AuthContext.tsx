@@ -17,6 +17,9 @@ interface User {
   email: string | null;
   name: string | null;
   photoURL: string | null;
+  createdAt?: string | null;
+  role?: string; // 🔥 NEW: Admin role field
+  isAdmin?: boolean; // 🔥 NEW: Quick admin check
 }
 
 interface AuthContextType {
@@ -26,6 +29,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  isAdmin: boolean; // 🔥 NEW: Easy admin check
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -49,7 +53,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await setDoc(userRef, userData, { merge: true });
     } catch (error) {
       console.error('Error saving user to Firestore:', error);
-      // Don't throw error - let auth continue even if Firestore fails
     }
   };
 
@@ -68,31 +71,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Signup function
   const signup = async (email: string, password: string, name: string) => {
     try {
-      // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      // Update profile with name
       await updateProfile(firebaseUser, {
         displayName: name
       });
 
-      // Save to Firestore
+      // 🔥 NEW: Default role is 'user'
       await saveUserToFirestore(firebaseUser.uid, {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: name,
         photoURL: null,
+        role: 'user', // 🔥 Default role
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
 
-      // Update local user state
       setUser({
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: name,
-        photoURL: null
+        photoURL: null,
+        role: 'user',
+        isAdmin: false,
+        createdAt: new Date().toISOString()
       });
 
     } catch (error: any) {
@@ -107,14 +111,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
 
-      // Get additional user data from Firestore
+      // 🔥 Get user role from Firestore
       const firestoreData = await getUserFromFirestore(firebaseUser.uid);
 
       setUser({
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: firestoreData?.name || firebaseUser.displayName,
-        photoURL: firestoreData?.photoURL || firebaseUser.photoURL
+        photoURL: firestoreData?.photoURL || firebaseUser.photoURL,
+        role: firestoreData?.role || 'user', // 🔥 Get role
+        isAdmin: firestoreData?.role === 'admin', // 🔥 Check if admin
+        createdAt: firestoreData?.createdAt || (firebaseUser.metadata?.creationTime ?? null)
       });
 
     } catch (error: any) {
@@ -123,57 +130,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Google Sign-In function with better error handling
+  // Google Sign-In function
   const loginWithGoogle = async () => {
     try {
-      console.log('Starting Google sign-in...');
-      
-      // Request additional scopes for profile photo access
       googleProvider.addScope('profile');
       googleProvider.addScope('email');
       
-      // Attempt sign in with popup
       const result = await signInWithPopup(auth, googleProvider);
       const firebaseUser = result.user;
-      
-      console.log('Google sign-in successful:', firebaseUser.email);
-      console.log('Profile photo URL:', firebaseUser.photoURL);
 
-      // Force reload user to get latest profile data
       await firebaseUser.reload();
       
-      // Get the updated photo URL (sometimes it needs a larger size)
       const photoURL = firebaseUser.photoURL 
-        ? firebaseUser.photoURL.replace('s96-c', 's400-c') // Get higher quality image
+        ? firebaseUser.photoURL.replace('s96-c', 's400-c')
         : null;
 
-      // Check if user exists in Firestore
       let firestoreData = await getUserFromFirestore(firebaseUser.uid);
 
-      // If new user or photoURL changed, save/update to Firestore
       if (!firestoreData || firestoreData.photoURL !== photoURL) {
-        console.log('Saving/updating user data to Firestore');
         await saveUserToFirestore(firebaseUser.uid, {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           name: firebaseUser.displayName,
           photoURL: photoURL,
+          role: firestoreData?.role || 'user', // 🔥 Preserve existing role
           createdAt: firestoreData?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
+        
+        // Reload firestore data after saving
+        firestoreData = await getUserFromFirestore(firebaseUser.uid);
       }
 
       setUser({
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: firebaseUser.displayName,
-        photoURL: photoURL
+        photoURL: photoURL,
+        role: firestoreData?.role || 'user', // 🔥 Get role
+        isAdmin: firestoreData?.role === 'admin', // 🔥 Check if admin
+        createdAt: firestoreData?.createdAt || new Date().toISOString()
       });
 
     } catch (error: any) {
       console.error('Google sign-in error:', error);
       
-      // Better error messages for common issues
       if (error.code === 'auth/popup-closed-by-user') {
         throw new Error('Sign-in cancelled. Please try again.');
       } else if (error.code === 'auth/popup-blocked') {
@@ -205,22 +206,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Force reload to get latest data
         await firebaseUser.reload();
         
-        // Get high quality photo URL
         const photoURL = firebaseUser.photoURL 
           ? firebaseUser.photoURL.replace('s96-c', 's400-c')
           : null;
         
-        // Get additional user data from Firestore
+        // 🔥 Get role from Firestore
         const firestoreData = await getUserFromFirestore(firebaseUser.uid);
 
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           name: firestoreData?.name || firebaseUser.displayName,
-          photoURL: firestoreData?.photoURL || photoURL
+          photoURL: firestoreData?.photoURL || photoURL,
+          role: firestoreData?.role || 'user', // 🔥 Get role
+          isAdmin: firestoreData?.role === 'admin', // 🔥 Check if admin
+          createdAt: firestoreData?.createdAt || (firebaseUser.metadata?.creationTime ?? null)
         });
       } else {
         setUser(null);
@@ -237,7 +239,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signup,
     login,
     logout,
-    loginWithGoogle
+    loginWithGoogle,
+    isAdmin: user?.isAdmin || false, // 🔥 Easy admin check
   };
 
   return (

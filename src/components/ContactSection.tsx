@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import { 
   Phone, 
   Mail, 
@@ -26,9 +28,10 @@ const ContactSection = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validation
     if (!formData.name || !formData.phone || !formData.message) {
       toast({
         title: "Please fill required fields",
@@ -38,20 +41,50 @@ const ContactSection = () => {
       return;
     }
 
+    // Phone validation (10 digits)
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(formData.phone.replace(/\D/g, ''))) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Please enter a valid 10-digit phone number.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     
-    setTimeout(() => {
+    try {
+      // Save to Firebase
+      await addDoc(collection(db, 'queries'), {
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim() || null,
+        message: formData.message.trim(),
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+
       toast({
         title: "✅ Inquiry Submitted Successfully!",
         description: "Our team will contact you within 24 hours for bulk order details.",
       });
       
+      // Reset form
       setFormData({ name: "", phone: "", email: "", message: "" });
+    } catch (error) {
+      console.error('Error submitting query:', error);
+      toast({
+        title: "Submission Failed",
+        description: "Something went wrong. Please try again or contact us directly.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -190,7 +223,7 @@ const ContactSection = () => {
               <p className="text-orange-50">Fill out the form and we'll get back to you within 24 hours</p>
             </div>
             <CardContent className="p-8">
-              <div className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <Label htmlFor="name" className="text-gray-700 font-semibold mb-2 block">
@@ -203,6 +236,7 @@ const ContactSection = () => {
                       onChange={handleInputChange}
                       placeholder="Enter your full name"
                       className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                      required
                     />
                   </div>
                   <div>
@@ -217,6 +251,7 @@ const ContactSection = () => {
                       onChange={handleInputChange}
                       placeholder="+91 XXXXX XXXXX"
                       className="h-12 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                      required
                     />
                   </div>
                 </div>
@@ -248,11 +283,12 @@ const ContactSection = () => {
                     placeholder="Tell us about your requirements: quantities needed, preferred fragrances, delivery location, timeline, etc."
                     rows={6}
                     className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 resize-none"
+                    required
                   />
                 </div>
 
                 <Button 
-                  onClick={handleSubmit}
+                  type="submit"
                   disabled={isSubmitting}
                   className="w-full h-14 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
@@ -272,7 +308,7 @@ const ContactSection = () => {
                 <p className="text-center text-sm text-gray-500">
                   By submitting, you agree to receive communications from Namami Enterprises
                 </p>
-              </div>
+              </form>
             </CardContent>
           </Card>
         </div>
@@ -292,7 +328,7 @@ const ContactSection = () => {
               width="100%"
               height="100%"
               style={{ border: 0 }}
-              allowFullScreen=""
+              allowFullScreen={true}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Namami Enterprises Factory Location"

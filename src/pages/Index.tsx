@@ -7,6 +7,10 @@ import WhyChooseUsSection from "@/components/WhyChooseUsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ServicesSection from "@/components/ServicesSection";
+import BlogSection from "@/components/BlogSection";
+import EventSection from "@/components/EventSection";
+import QueryManager from '@/components/admin/Querymanager';
+
 
 const Index = () => {
   useEffect(() => {
@@ -127,37 +131,43 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Skip to main content for accessibility */}
-      <a 
-        href="#main-content" 
+      <a
+        href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:p-4 focus:bg-primary focus:text-white"
       >
         Skip to main content
       </a>
 
       <Header />
-      
+
       <main id="main-content" role="main" aria-label="Main content">
         {/* Hero Section - Primary CTA */}
         <HeroSection />
-        
+
         {/* About Section */}
         <AboutSection />
-        
+
         {/* Products Section - Core offering */}
         <ProductsSection />
-        
+
         {/* Services Section */}
         <ServicesSection />
-        
+
+        {/* Blog Section - Shows published blogs from Firebase */}
+        <BlogSection />
+
+        {/* Event Section - Shows upcoming events from Firebase */}
+        <EventSection />
+
         {/* Why Choose Us Section */}
         <WhyChooseUsSection />
-        
+
         {/* Contact Section - Secondary CTA */}
         <ContactSection />
       </main>
-      
+
       <Footer />
-      
+
       {/* Back to Top Button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -177,8 +187,8 @@ const Index = () => {
       >
         {/* WhatsApp SVG icon (accessible) */}
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" focusable="false" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20.52 3.48A11.86 11.86 0 0012.03.25C6.13.25 1.5 4.88 1.5 10.78c0 1.93.5 3.76 1.45 5.37L.75 23.5l7.7-2.05c1.5.42 3.06.64 4.58.64 5.9 0 10.53-4.63 10.53-10.53 0-2.84-1.1-5.5-3.04-7.03z" fill="currentColor"/>
-          <path d="M17.06 14.06c-.26-.13-1.54-.76-1.78-.84-.24-.08-.41-.13-.58.13-.17.26-.66.84-.81 1.01-.15.17-.3.19-.56.07-.26-.13-1.1-.41-2.09-1.29-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.11-.11.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.07-.13-.58-1.4-.8-1.92-.21-.5-.43-.43-.59-.44-.15-.01-.32-.01-.49-.01-.17 0-.45.06-.69.32-.24.26-.92.9-.92 2.19 0 1.29.94 2.53 1.07 2.71.13.17 1.86 2.96 4.51 4.03 3.14 1.23 3.14.82 3.71.77.57-.05 1.86-.76 2.12-1.49.26-.73.26-1.36.18-1.49-.08-.13-.26-.17-.58-.3z" fill="#fff"/>
+          <path d="M20.52 3.48A11.86 11.86 0 0012.03.25C6.13.25 1.5 4.88 1.5 10.78c0 1.93.5 3.76 1.45 5.37L.75 23.5l7.7-2.05c1.5.42 3.06.64 4.58.64 5.9 0 10.53-4.63 10.53-10.53 0-2.84-1.1-5.5-3.04-7.03z" fill="currentColor" />
+          <path d="M17.06 14.06c-.26-.13-1.54-.76-1.78-.84-.24-.08-.41-.13-.58.13-.17.26-.66.84-.81 1.01-.15.17-.3.19-.56.07-.26-.13-1.1-.41-2.09-1.29-.77-.69-1.29-1.54-1.44-1.8-.15-.26-.02-.4.11-.53.11-.11.26-.3.39-.45.13-.15.17-.26.26-.43.08-.17.04-.32-.02-.45-.07-.13-.58-1.4-.8-1.92-.21-.5-.43-.43-.59-.44-.15-.01-.32-.01-.49-.01-.17 0-.45.06-.69.32-.24.26-.92.9-.92 2.19 0 1.29.94 2.53 1.07 2.71.13.17 1.86 2.96 4.51 4.03 3.14 1.23 3.14.82 3.71.77.57-.05 1.86-.76 2.12-1.49.26-.73.26-1.36.18-1.49-.08-.13-.26-.17-.58-.3z" fill="#fff" />
         </svg>
       </button>
     </div>

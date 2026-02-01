@@ -29,11 +29,11 @@ const AboutSection = () => {
       alt: "State-of-the-art manufacturing facility",
       caption: "Founder Mr. Pawan Singh Gurjar",
     },
-    {
-      src: factoryImage2,
-      alt: "Quality assurance and testing lab",
-      caption: "Rigorous Quality Control",
-    },
+    // {
+    //   src: factoryImage2,
+    //   alt: "Quality assurance and testing lab",
+    //   caption: "Rigorous Quality Control",
+    // },
     {
       src: factoryImage,
       alt: "Distribution network across India",
@@ -68,8 +68,8 @@ const AboutSection = () => {
 
   const stats = [
     { icon: Users, value: "500+", label: "Trusted Partners" },
-    { icon: Award, value: "ISO", label: "Certified Quality" },
-    { icon: TrendingUp, value: "", label: "Years Legacy" },
+    { icon: Award, value: "MSME", label: "Certified " },
+    { icon: TrendingUp, value: "Years", label: "of Legacy" },
   ];
 
   const features = [

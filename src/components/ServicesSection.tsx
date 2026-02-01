@@ -64,38 +64,16 @@ const MachinerySection = () => {
       specs: ["500 sticks/batch", "Temperature Control", "Auto Timer"],
       gradient: "from-orange-500 to-red-600",
     },
-    {
-      id: 4,
-      name:"Powder Mixing Machine",
-      images: [machine11, machine12],
-      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
-      specs: ["40 kg primix + 25 kg water ", "3 HP Motor", "SS Construction"],
-      gradient: "from-purple-500 to-pink-600",
-    },
+    
     {
       id: 4,
       name:  "Powder Mixing Machine",
       images: [machine11, machine12],
       description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
-      specs: ["25 kg primix + 15 kg water", "2 HP Motor", "SS Construction"],
+      specs: ["25 kg primix ,15 kg primix ,60 kg primix +  water", "1,2,3,5 HP Motors", "SS Construction"],
       gradient: "from-purple-500 to-pink-600",
     },
-    {
-      id: 5,
-      name:  "Powder Mixing Machine",
-      images: [machine11, machine12],
-      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
-      specs: ["15 kg primix + 10 kg water ", "1 HP Motor", "SS Construction"],
-      gradient: "from-purple-500 to-pink-600",
-    },
-     {
-      id: 6,
-      name:  "Powder Mixing Machine",
-      images: [machine11, machine12],
-      description: "Industrial-grade powder mixer for consistent agarbatti paste preparation and blending.",
-      specs: ["60 kg primix + 40 kg water  ", "5 HP Motor", "SS Construction"],
-      gradient: "from-purple-500 to-pink-600",
-    },
+   
   
 
   ];
@@ -279,12 +257,7 @@ const MachinerySection = () => {
               <Wrench size={16} />
               <span>Machines We Offer</span>
             </div>
-            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Premium Agarbatti Manufacturing Machines
-            </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              High-performance machines built with quality materials for consistent production
-            </p>
+            
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Suspense, lazy, Component, ErrorInfo, ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -8,9 +9,17 @@ import { HelmetProvider, Helmet } from "react-helmet-async";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 
-// 🔥 Lazy load non-critical pages for better initial load
+
+// 🔥 Lazy load pages
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+
+// Blog Pages
+// Note: Ensure you have created src/pages/BlogPost.tsx as per the previous step
+const BlogPost = lazy(() => import("./pages/BlogPost")); 
+// If you create a separate "All Blogs" page later, uncomment the line below:
+// const BlogList = lazy(() => import("./pages/BlogList"));
 
 // Initialize React Query Client
 const queryClient = new QueryClient({
@@ -44,7 +53,6 @@ class ErrorBoundary extends Component<
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Error Boundary caught an error:", error, errorInfo);
-    // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
   }
 
   render() {
@@ -94,36 +102,26 @@ const LoadingScreen = () => (
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
+  if (loading) return <LoadingScreen />;
+  if (!user) return <Navigate to="/auth" replace />;
 
   return <>{children}</>;
 };
 
-// Public Route Component (redirects to home if already logged in)
+// Public Route Component
 const PublicRoute = ({ children }: { children: ReactNode }) => {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
+  if (loading) return <LoadingScreen />;
+  if (user) return <Navigate to="/" replace />;
 
   return <>{children}</>;
 };
 
-// 🔥 SEO Component - Dynamic meta tags for each page
+// 🔥 SEO Component
 const SEO = () => {
   const location = useLocation();
-  
+
   // Default SEO data
   const defaultSEO = {
     title: "Namami Enterprises - Premium Agarbatti Manufacturer & Wholesale Supplier in Indore | ISO Certified",
@@ -143,9 +141,28 @@ const SEO = () => {
       image: defaultSEO.image,
       url: "https://namamienterprises.in/auth",
     },
+    // Generic SEO for blog detail pages
+    "/blog": { 
+      title: "Blog | Namami Enterprises - Industry Insights",
+      description: "Read detailed insights, manufacturing process, and stories from Namami Enterprises.",
+      keywords: "agarbatti blog, industry blog, incense manufacturing process",
+      image: defaultSEO.image,
+      url: "https://namamienterprises.in/blog",
+    },
   };
 
-  const currentSEO = pageSEO[location.pathname] || defaultSEO;
+  // Determine current SEO logic
+  let currentSEO = pageSEO[location.pathname];
+
+  // Dynamic SEO handling for blog posts
+  if (!currentSEO && location.pathname.startsWith('/blog/')) {
+    currentSEO = pageSEO['/blog'];
+  }
+
+  // Fallback to default
+  if (!currentSEO) {
+    currentSEO = defaultSEO;
+  }
 
   return (
     <Helmet>
@@ -154,24 +171,24 @@ const SEO = () => {
       <meta name="title" content={currentSEO.title} />
       <meta name="description" content={currentSEO.description} />
       <meta name="keywords" content={currentSEO.keywords} />
-      
+
       {/* Canonical URL */}
       <link rel="canonical" href={currentSEO.url + location.pathname} />
-      
+
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={currentSEO.url + location.pathname} />
       <meta property="og:title" content={currentSEO.title} />
       <meta property="og:description" content={currentSEO.description} />
       <meta property="og:image" content={currentSEO.image} />
-      
+
       {/* Twitter */}
       <meta property="twitter:card" content="summary_large_image" />
       <meta property="twitter:url" content={currentSEO.url + location.pathname} />
       <meta property="twitter:title" content={currentSEO.title} />
       <meta property="twitter:description" content={currentSEO.description} />
       <meta property="twitter:image" content={currentSEO.image} />
-      
+
       {/* Additional SEO */}
       <meta name="robots" content="index, follow" />
       <meta name="language" content="English, Hindi" />
@@ -190,11 +207,17 @@ const App = () => (
             <AuthProvider>
               {/* 🔥 Dynamic SEO for each page */}
               <SEO />
-              
+
               <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                   {/* Public Routes */}
                   <Route path="/" element={<Index />} />
+                  
+                  {/* Blog Detail Route (Dynamic ID) */}
+                  <Route path="/blog/:id" element={<BlogPost />} />
+                  
+                  {/* If you create a blog list page later, enable this: */}
+                  {/* <Route path="/blogs" element={<BlogList />} /> */}
 
                   {/* Auth Route - Redirects to home if already logged in */}
                   <Route
@@ -206,17 +229,15 @@ const App = () => (
                     }
                   />
 
-                  {/* Protected Routes - Add your protected pages here */}
-                  {/* Example:
+                  {/* Admin Dashboard - Only for admin users */}
                   <Route
-                    path="/dashboard"
+                    path="/admin"
                     element={
                       <ProtectedRoute>
-                        <Dashboard />
+                        <AdminDashboard />
                       </ProtectedRoute>
                     }
                   />
-                  */}
 
                   {/* 404 Route */}
                   <Route path="*" element={<NotFound />} />
