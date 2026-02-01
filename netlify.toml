@@ -20,26 +20,11 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Content Security Policy - Firebase & Google Services allowed
-    Content-Security-Policy = '''
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com;
-      connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com https://api.anthropic.com;
-      font-src 'self' data: https://fonts.gstatic.com;
-      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      img-src 'self' data: https: blob:;
-      frame-src 'self' https://*.firebaseapp.com https://accounts.google.com;
-      object-src 'none';
-      base-uri 'self';
-      form-action 'self';
-    '''
-    
-    # Security headers
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com https://api.anthropic.com wss://*.firebaseio.com; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 # ============================================
 # REDIRECTS - SEO Critical (301 Permanent)
