@@ -6,12 +6,24 @@ import logo from "@/assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
+const FRAGMENT_ALIAS_MAP: Record<string, string> = {
+  services: "machinery-services",
+  machinery: "machinery-services",
+  products: "products",
+  home: "home",
+  about: "about",
+  contact: "contact",
+  "why-choose-us": "why-choose-us",
+  blog: "blogs",
+  blogs: "blogs",
+};
+
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   // 🔥 UPDATED: Added isAdmin from useAuth
-  const { user, isAdmin, logout } = useAuth() as any; 
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   // Handle Scroll Effect for Shadow
@@ -85,19 +97,6 @@ const Header: React.FC = () => {
     return (user.name?.[0] || user.email?.[0] || "U").toUpperCase();
   };
 
-  // Fragment Alias Map
-  const fragmentAliasMap: Record<string, string> = {
-    services: "machinery-services",
-    machinery: "machinery-services",
-    products: "products",
-    home: "home",
-    about: "about",
-    contact: "contact",
-    "why-choose-us": "why-choose-us",
-    blog: "blogs",
-    blogs: "blogs"
-  };
-
   /**
    * scrollToHash - Robust scrolling logic
    */
@@ -107,8 +106,8 @@ const Header: React.FC = () => {
     triedIds.add(idRaw);
 
     // alias fallback
-    if (fragmentAliasMap[idRaw] && fragmentAliasMap[idRaw] !== idRaw) {
-      triedIds.add(fragmentAliasMap[idRaw]);
+    if (FRAGMENT_ALIAS_MAP[idRaw] && FRAGMENT_ALIAS_MAP[idRaw] !== idRaw) {
+      triedIds.add(FRAGMENT_ALIAS_MAP[idRaw]);
     }
 
     triedIds.add(idRaw.toLowerCase());
@@ -245,7 +244,7 @@ const Header: React.FC = () => {
               itemScope
               itemType="https://schema.org/Organization"
             >
-              <link itemProp="url" href="https://namamienterprises.netlify.app" />
+              <link itemProp="url" href="https://namamienterprises.in" />
               <div className="relative">
                 <div className="w-14 h-14 bg-gradient-to-br from-orange-500 via-orange-400 to-amber-400 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 rotate-6 group-hover:rotate-0 overflow-hidden">
                   <img

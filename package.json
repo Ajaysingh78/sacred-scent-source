@@ -24,7 +24,7 @@
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "postbuild": "node scripts/generate-sitemap.js || true"
+    "postbuild": "node -e \"const fs=require('fs');const {spawnSync}=require('child_process');const script='scripts/generate-sitemap.js';if(!fs.existsSync(script)){console.log('Skipping sitemap generation: '+script+' not found');process.exit(0);}const res=spawnSync(process.execPath,[script],{stdio:'inherit'});process.exit(res.status??0);\""
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.6",
@@ -87,6 +87,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/minimatch": "^5.1.2",
     "@types/node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",

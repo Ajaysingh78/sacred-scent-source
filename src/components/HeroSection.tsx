@@ -22,7 +22,7 @@ const NamamiHero = () => {
   useEffect(() => {
     setIsVisible(true);
     
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ 
         x: (e.clientX / window.innerWidth) * 15, 
         y: (e.clientY / window.innerHeight) * 15 
@@ -33,7 +33,7 @@ const NamamiHero = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
