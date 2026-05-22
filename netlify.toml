@@ -1,6 +1,6 @@
 # Netlify Configuration for Namami Enterprises
 # https://namamienterprises.in
-# Last Updated: February 2025
+# Last Updated: May 2026
 
 # ============================================
 # BUILD SETTINGS
@@ -36,13 +36,16 @@
   compress = true
 
 # ============================================
-# SECURITY HEADERS - Firebase Compatible
+# SECURITY HEADERS - Firebase & Cloudinary Compatible
 # ============================================
 [[headers]]
   for = "/*"
   [headers.values]
-    # Content Security Policy (Tightened but Firebase compatible)
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com wss://*.firebaseio.com; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+    # Content Security Policy (Cloudinary & Firebase explicit fallback)
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; connect-src 'self' https://api.cloudinary.com https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com wss://*.firebaseio.com; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; frame-src 'self' https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;"
+    
+    # Fixes Cross-Origin-Opener-Policy console warnings for Firebase Popups
+    Cross-Origin-Opener-Policy = "same-origin-allow-popups"
     
     # Frame protection (Allow Firebase auth popups)
     X-Frame-Options = "SAMEORIGIN"
@@ -178,12 +181,6 @@
   to = "https://namamienterprises.in/:splat"
   status = 301
   force = true
-
-# Legacy URL redirects (add if you had old URLs)
-# [[redirects]]
-#   from = "/old-product-page"
-#   to = "/#products"
-#   status = 301
 
 # ============================================
 # SPA ROUTING (React Router) - MUST BE LAST
