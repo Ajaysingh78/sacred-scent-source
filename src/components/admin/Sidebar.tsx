@@ -1,6 +1,9 @@
 // src/components/admin/Sidebar.tsx
+// CHANGE: Added HardHat icon import + 'labor' menu item in menuItems array
+// Everything else is UNCHANGED
+
 import { useAuth } from '@/contexts/AuthContext';
-import { LayoutDashboard, FileText, Calendar, MessageSquare, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, MessageSquare, LogOut, User, HardHat } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -23,7 +26,8 @@ const Sidebar = ({ activeTab, setActiveTab, user }: SidebarProps) => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'blogs', label: 'Blogs', icon: FileText },
     { id: 'events', label: 'Events', icon: Calendar },
-    { id: 'queries', label: 'Queries', icon: MessageSquare }, // NEW ADDITION
+    { id: 'queries', label: 'Queries', icon: MessageSquare },
+    { id: 'labor', label: 'Labor Management', icon: HardHat }, // ← NEW LINE ADDED
   ];
 
   return (
